@@ -19,4 +19,26 @@ class StyleApp{
       )
     );
   }
+
+  static IconThemeData darkIcon(BuildContext context){
+    final icon = IconThemeData.fallback();
+    return icon.copyWith(
+      color: Color.fromARGB(255, 86, 164, 210)
+    );
+  }
+
+  static IconThemeData lightIcon(BuildContext context){
+    final icon = IconThemeData.fallback();
+    return icon.copyWith(
+      color: Color.fromARGB(230, 11, 80, 32)
+    );
+  }
+
+  static Color darkIconDrawer(BuildContext context){
+    return Color.fromARGB(255, 86, 164, 210);
+  }
+
+  static Color lightIconDrawer(BuildContext context){
+    return Color.fromARGB(230, 11, 80, 32);
+  }
 }
