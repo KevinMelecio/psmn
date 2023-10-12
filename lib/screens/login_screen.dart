@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pmsn20232/components/my_textfield.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -10,46 +11,69 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool rememberMe = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkRememberMeStatus();
+  }
+
+  void _checkRememberMeStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool rememberMe = prefs.getBool('isLoggedIn') ?? false;
+    if (rememberMe) {
+      setState(() {
+        rememberMe = true;
+      });
+    }
+  }
+
+  void _login() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (rememberMe) {
+      prefs.setBool('rememberMe', true);
+    } else {
+      prefs.remove('rememberMe');
+    }
+    //Redirigir a la pantalla principal
+    Navigator.pushNamed(context, '/dash');
+  }
+
   @override
   Widget build(BuildContext context) {
-
     TextEditingController txtConUser = TextEditingController();
     TextEditingController txtConPass = TextEditingController();
-    final txtUser= TextField(
+    final txtUser = TextField(
       controller: txtConUser,
-      decoration: const InputDecoration(
-        border: OutlineInputBorder()
-      ),
+      decoration: const InputDecoration(border: OutlineInputBorder()),
     );
 
     final txtPass = TextField(
       controller: txtConPass,
       obscureText: true,
-      decoration: const InputDecoration(
-        border: OutlineInputBorder()
-      ),
+      decoration: const InputDecoration(border: OutlineInputBorder()),
     );
 
     final imgLogo = Container(
       width: 200,
       decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: NetworkImage('https://th.bing.com/th/id/R.3b0e6b71487bf1445034d46eef5d0209?rik=jfGbLN9kQpMbAA&pid=ImgRaw&r=0')
-        )
-      ),
+          image: DecorationImage(
+              image: NetworkImage(
+                  'https://th.bing.com/th/id/R.3b0e6b71487bf1445034d46eef5d0209?rik=jfGbLN9kQpMbAA&pid=ImgRaw&r=0'))),
     );
 
     final btnEntrar = FloatingActionButton.extended(
-      icon: Icon(Icons.login),
-      label: Text('Entrar'),
-      onPressed: () => Navigator.pushNamed(context, '/dash')
-      // {
-      //   Navigator.pushNamed(context, '/dash');
-      // }
-    );
+        icon: Icon(Icons.login),
+        label: Text('Entrar'),
+        onPressed: () => Navigator.pushNamed(context, '/dash')
+        // {
+        //   Navigator.pushNamed(context, '/dash');
+        // }
+        );
 
-return Scaffold(
-      resizeToAvoidBottomInset: false, //para que pueda dimensionarse y no afecte el teclado de la pantalla
+    return Scaffold(
+        resizeToAvoidBottomInset:
+            false, //para que pueda dimensionarse y no afecte el teclado de la pantalla
         body: SafeArea(
           child: Center(
             child: Column(
@@ -95,12 +119,13 @@ return Scaffold(
                 Row(
                   children: [
                     Checkbox(
-                      value: rememberMe, 
-                      onChanged: (value){
-                        setState(() {
-                          rememberMe = value!;
-                        });
-                      }),
+                        value: rememberMe,
+                        onChanged: (value) {
+                          setState(() {
+                            rememberMe = value!;
+                            print(value);
+                          });
+                        }),
                     Text('Recordarme')
                   ],
                 ),
@@ -113,7 +138,7 @@ return Scaffold(
                           fontWeight: FontWeight.bold,
                           fontSize: 16),
                     ),
-                    onPressed: () => Navigator.pushNamed(context, '/dash'))
+                    onPressed: _login)
               ],
             ),
           ),
@@ -145,7 +170,7 @@ return Scaffold(
     //             ),
     //             child: Column(
     //               children: [
-    //                 txtUser, 
+    //                 txtUser,
     //                 const SizedBox(height: 10,),
     //                 txtPass,
     //               ],
