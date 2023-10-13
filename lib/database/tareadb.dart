@@ -69,7 +69,15 @@ class TareaDB {
       tblName, 
       data, 
       where: 'idCarrera = ?',
-      whereArgs: [data['idCarreraC']]);
+      whereArgs: [data['idCarrera']]);
+  }
+
+  Future<int> DELETE_CARRERA(String tblName,int idCarrera) async {
+    var conexion = await database;
+    return conexion!.delete(
+      tblName, 
+      where: 'idCarrera = ?',
+      whereArgs: [idCarrera]);
   }
 
   Future<List<TareaModel>> GETALLTAREAS()async{

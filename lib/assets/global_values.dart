@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class GlobalValues{
   static ValueNotifier<bool> flagTheme = ValueNotifier<bool>(true);
   static ValueNotifier<bool> flagTask = ValueNotifier<bool>(true);
+  static ValueNotifier<bool> flagCarrera = ValueNotifier<bool>(true);
 
   getTheme(valor)async{
     flagTheme.value = valor;

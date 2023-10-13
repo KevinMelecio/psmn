@@ -25,7 +25,8 @@ class _AddTareaState extends State<AddTarea> {
     super.initState();
     tareaDB = TareaDB();
     if(widget.carreraModel != null){
-      txtConCarr.text = widget.carreraModel!.nomCarrera!;
+      txtConCarr.text = (widget.carreraModel != null 
+      ? widget.carreraModel!.nomCarrera : '')!;
     }
   }
 
@@ -58,7 +59,7 @@ class _AddTareaState extends State<AddTarea> {
         } else {
           tareaDB!.UPDATE_CARRERA('Carrera', {
             'idCarrera' : widget.carreraModel!.idCarrera,
-            'nomCarrera' : txtConCarr.text
+            'nomCarrera' : txtConCarr.text,
           }).then((value) {
             GlobalValues.flagTask.value= !GlobalValues.flagTask.value;
               var msj = (value > 0)
