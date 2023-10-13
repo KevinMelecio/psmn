@@ -19,6 +19,7 @@ class _CarreraScreenState extends State<CarreraScreen> {
     super.initState();
     tareaDB = TareaDB();
   }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -26,9 +27,9 @@ class _CarreraScreenState extends State<CarreraScreen> {
         actions: [
           IconButton(
               onPressed: () =>
-              Navigator.pushNamed(context, '/addTarea').then((value) {
-                setState(() {});
-              }),
+                  Navigator.pushNamed(context, '/addTarea').then((value) {
+                    setState(() {});
+                  }),
               icon: Icon(Icons.task))
         ],
       ),
@@ -39,25 +40,24 @@ class _CarreraScreenState extends State<CarreraScreen> {
                 future: tareaDB!.GETALLCARRERA(),
                 builder: (BuildContext context,
                     AsyncSnapshot<List<CarreraModel>> snapshot) {
-                      if (snapshot.hasData) {
-                return ListView.builder(
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return CardCarreraWidget(
-                        carreraModel: snapshot.data![index], 
-                        tareaDB: tareaDB);
-                    });
-              } else {
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text('Something was wrong!!'),
-                  );
-                } else {
-                  return CircularProgressIndicator();
-                }
-              }
-              }
-            );
+                  if (snapshot.hasData) {
+                    return ListView.builder(
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return CardCarreraWidget(
+                              carreraModel: snapshot.data![index],
+                              tareaDB: tareaDB);
+                        });
+                  } else {
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Text('Something was wrong!!'),
+                      );
+                    } else {
+                      return CircularProgressIndicator();
+                    }
+                  }
+                });
           }),
     );
   }
