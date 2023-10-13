@@ -98,6 +98,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   onTap: () => Navigator.pushNamed(context, '/popular'),
                 ),
                 ListTile(
+                  iconColor: value
+                      ? StyleApp.darkIconDrawer(context)
+                      : StyleApp.lightIconDrawer(context),
+                  leading: Icon(Icons.task_alt_outlined),
+                  trailing: Icon(Icons.chevron_right),
+                  title: Text('Tareas'),
+                  onTap: () => Navigator.pushNamed(context, '/tareas'),
+                ),
+                ListTile(
+                  iconColor: value
+                      ? StyleApp.darkIconDrawer(context)
+                      : StyleApp.lightIconDrawer(context),
+                  leading: Icon(Icons.task_alt_outlined),
+                  trailing: Icon(Icons.chevron_right),
+                  title: Text('Carrera'),
+                  onTap: () => Navigator.pushNamed(context, '/carrera'),
+                ),
+                ListTile(
                     iconColor: value
                         ? StyleApp.darkIconDrawer(context)
                         : StyleApp.lightIconDrawer(context),
