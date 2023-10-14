@@ -27,40 +27,42 @@ class _TareasScreenState extends State<TareasScreen> {
         title: Text('Tareas'),
         actions: [
           IconButton(
-              onPressed: () => {},
-              // Navigator.pushNamed(context, '/add').then((value) {
-              //   setState(() {});
-              // }),
+              onPressed: () =>
+                  Navigator.pushNamed(context, '/addTarea').then((value) {
+                    setState(() {});
+                  }),
               icon: Icon(Icons.task))
         ],
       ),
       body: ValueListenableBuilder(
-          valueListenable: GlobalValues.flagTask,
-          builder: (context, value, _) {
-            return FutureBuilder(
-                future: tareaDB!.GETALLTAREAS(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<List<TareaModel>> snapshot) {
-                  if (snapshot.hasData) {
-                    return ListView.builder(
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return CardTareasWidget(
-                            tareaModel: snapshot.data![index],
-                            tareaDB: tareaDB);
-                      },
-                    );
-                  } else {
-                    if(snapshot.hasError){
-                      return const Center(
-                        child: Text('Error!'),
-                        );
-                    } else {
-                      return CircularProgressIndicator();
-                    }
-                  }
-                });
-          }),
+        valueListenable: GlobalValues.flagTask,
+        builder: (context, value, _) {
+          return FutureBuilder<List<TareaModel>>(
+            future: tareaDB!.GETALLTAREAS(),
+            builder: (BuildContext context,
+                AsyncSnapshot<List<TareaModel>> snapshot) {
+              if (snapshot.hasData) {
+                return ListView.builder(
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index) {
+                    return CardTareasWidget(
+                      tareaModel: snapshot.data![index], 
+                      tareaDB: tareaDB);
+                  },
+                );
+              } else {
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text('Something was wrong!!'),
+                  );
+                } else {
+                  return CircularProgressIndicator();
+                }
+              }
+            },
+          );
+        },
+      ),
     );
   }
 }

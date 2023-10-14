@@ -1,11 +1,14 @@
+import 'dart:ffi';
+
 class TareaModel {
   int? idTarea;
   String? nomTarea;
-  int? fecExpiracion; // Debes convertir esto a DateTime cuando lo uses
-  int? fecRecordatorio; // Debes convertir esto a DateTime cuando lo uses
+  String? fecExpiracion; // Debes convertir esto a DateTime cuando lo uses
+  String? fecRecordatorio; // Debes convertir esto a DateTime cuando lo uses
   String? desTarea;
-  int? realizada;
+  String? realizada;
   int? idProfe;
+  String? nomProfe;
 
   TareaModel({
     this.idTarea,
@@ -15,6 +18,7 @@ class TareaModel {
     this.desTarea,
     this.realizada,
     this.idProfe,
+    this.nomProfe
   });
 
   factory TareaModel.fromMap(Map<String,dynamic> map){
@@ -26,6 +30,7 @@ class TareaModel {
       desTarea: map['desTarea'],
       realizada: map['realizada'],
       idProfe: map['idProfe'],
+      nomProfe: map['nomProfe']
     );
   }
 }

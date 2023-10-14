@@ -1,95 +1,289 @@
 import 'package:flutter/material.dart';
 import 'package:pmsn20232/assets/global_values.dart';
 import 'package:pmsn20232/database/tareadb.dart';
-import 'package:pmsn20232/models/carrera_model.dart';
 import 'package:pmsn20232/models/tarea_model.dart';
 
 class AddTarea extends StatefulWidget {
-  AddTarea({super.key, this.carreraModel});
+  AddTarea({super.key, this.tareaModel});
 
-  CarreraModel? carreraModel;
+  TareaModel? tareaModel;
 
   @override
   State<AddTarea> createState() => _AddTareaState();
 }
 
 class _AddTareaState extends State<AddTarea> {
+  TextEditingController txtConNomTarea = TextEditingController();
+  TextEditingController txtConFExp = TextEditingController();
+  TextEditingController txtConFRec = TextEditingController();
+  TextEditingController txtConDesTarea = TextEditingController();
+  List<String> dropDownValues = ['Completado', 'No Completado'];
+  String dropDownValue = 'No Completado';
+  String? selectedProfe;
+  List<String> profesores = [];
+  DateTime _dateExp = DateTime.now();
+  DateTime _dateRec = DateTime.now();
 
-  TextEditingController txtConCarr = TextEditingController();
 
   TareaDB? tareaDB;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     tareaDB = TareaDB();
-    if(widget.carreraModel != null){
-      txtConCarr.text = (widget.carreraModel != null 
-      ? widget.carreraModel!.nomCarrera : '')!;
+    if (widget.tareaModel != null) {
+      txtConNomTarea.text =
+          widget.tareaModel != null ? widget.tareaModel!.nomTarea! : '';
+
+      String fechaExpiracionStr = widget.tareaModel!.fecExpiracion ?? '';
+      List<String> parts = fechaExpiracionStr.split('-');
+      if (parts.length == 3) {
+        int year = int.parse(parts[0]);
+        int month = int.parse(parts[1]);
+        int day = int.parse(parts[2]);
+        _dateExp = DateTime(year, month, day);
+      } else {
+        // Manejo de error, la cadena no tiene el formato esperado
+      }
+
+      String fechaRecordatorioStr = widget.tareaModel!.fecRecordatorio ?? '';
+      List<String> part = fechaRecordatorioStr.split('-');
+      if (part.length == 3) {
+        int year = int.parse(part[0]);
+        int month = int.parse(part[1]);
+        int day = int.parse(part[2]);
+        _dateRec = DateTime(year, month, day);
+      } else {
+        // Manejo de error, la cadena no tiene el formato esperado
+      }
+
+      txtConDesTarea.text =
+          widget.tareaModel != null ? widget.tareaModel!.desTarea! : '';
+      switch (widget.tareaModel!.realizada) {
+        case 'C':
+          dropDownValue = 'Completado';
+          break;
+        case 'N':
+          dropDownValue = 'No Completado';
+          break;
+      }
+      selectedProfe = widget.tareaModel!.nomProfe;
     }
+
+    tareaDB!.GETALLPROFESOR().then((value) {
+      setState(() {
+        profesores = value
+            .where((profesor) => profesor.nomProfe != null)
+            .map((profesor) => profesor.nomProfe ?? 'Nombre Desconocido')
+            .toList();
+      });
+    });
+  }
+
+  void _showDatePicker(bool isDateExp) {
+    showDatePicker(
+            context: context,
+            initialDate: isDateExp == true ?
+                  _dateExp: _dateRec,
+            firstDate: DateTime(2015),
+            lastDate: DateTime(2025))
+        .then(
+      (value) {
+        setState(() {
+          if (isDateExp) {
+            _dateExp = value!;
+          } else {
+            _dateRec = value!;
+          }
+        });
+      },
+    );
+  }
+
+  String formatDate(DateTime date) {
+    String year = date.year.toString();
+    String month = date.month.toString().padLeft(2, '0');
+    String day = date.day.toString().padLeft(2, '0');
+    return '$year-$month-$day';
   }
 
   @override
   Widget build(BuildContext context) {
-
-    final txtNameCarrera = TextFormField(
+    final txtNomTarea = TextFormField(
       decoration: const InputDecoration(
-        label: Text('Carrera'),
-        border:OutlineInputBorder()
-      ),
-      controller: txtConCarr,
+          label: Text('Tarea'), border: OutlineInputBorder()),
+      controller: txtConNomTarea,
     );
 
-    final space = SizedBox(height: 10,);
+    final space = SizedBox(
+      height: 12,
+    );
+
+    final objFechaExp = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        MaterialButton(
+          onPressed: () => _showDatePicker(true),
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Text(
+              'Fecha de Expiracion',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 15,
+              ),
+            ),
+          ),
+          color: Colors.blue,
+        ),
+        SizedBox(
+          width: 10,
+        ),
+        Text(formatDate(_dateExp), style: TextStyle(fontSize: 20.0)),
+      ],
+    );
+
+    final objFechaRec = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        MaterialButton(
+          onPressed: () => _showDatePicker(false),
+          child: Padding(
+            padding: EdgeInsets.all(15.0),
+            child: Text(
+              'Fecha de Recordatorio',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+              ),
+            ),
+          ),
+          color: Colors.blue,
+        ),
+        SizedBox(
+          width: 10,
+        ),
+        Text(formatDate(_dateRec), style: TextStyle(fontSize: 20.0)),
+      ],
+    );
+
+    final txtDesTarea = TextField(
+      decoration: const InputDecoration(
+          label: Text('Descripcion'), border: OutlineInputBorder()),
+      maxLines: 6,
+      controller: txtConDesTarea,
+    );
+
+    final DropdownButton dropdownRealizada = DropdownButton(
+      value: dropDownValue,
+      items: dropDownValues
+          .map((status) => DropdownMenuItem(value: status, child: Text(status)))
+          .toList(),
+      onChanged: (value) {
+        dropDownValue = value;
+        setState(() {});
+      },
+    );
+
+    final dropdownProfesor = DropdownButtonFormField<String>(
+        decoration: const InputDecoration(
+            labelText: 'Profesor', border: OutlineInputBorder()),
+        value: selectedProfe,
+        items: profesores.map((profesor) {
+          return DropdownMenuItem<String>(
+            value: profesor,
+            child: Text(profesor),
+          );
+        }).toList(),
+        onChanged: (String? newValue) {
+          setState(() {
+            selectedProfe = newValue;
+          });
+        });
 
     final ElevatedButton btnGuardar = ElevatedButton(
-      onPressed: (){
-        if(widget.carreraModel == null){
-          tareaDB!.INSERT('Carrera', {
-            'nomCarrera' : txtConCarr.text
-          }).then((value) {
-            var msj = (value > 0)
-                  ? 'La inserción fue exitosa!'
-                  : 'Ocurrió un error';
-              var snackbar = SnackBar(content: Text(msj));
-              ScaffoldMessenger.of(context).showSnackBar(snackbar);
-              Navigator.pop(context);
-          });
-        } else {
-          tareaDB!.UPDATE_CARRERA('Carrera', {
-            'idCarrera' : widget.carreraModel!.idCarrera,
-            'nomCarrera' : txtConCarr.text,
-          }).then((value) {
-            GlobalValues.flagTask.value= !GlobalValues.flagTask.value;
-              var msj = (value > 0)
-                  ? 'La actualización fue exitosa!'
-                  : 'Ocurrió un error';
-              var snackbar = SnackBar(content: Text(msj));
-              ScaffoldMessenger.of(context).showSnackBar(snackbar);
-              Navigator.pop(context);
-          });
-        }
-      }, 
-      child: Text('Guardar Carrera'));
-
+        onPressed: () {
+          if (selectedProfe != null) {
+            tareaDB!.GETPROFESORID(selectedProfe!).then((idProfe) {
+              if (idProfe != null) {
+                final nuevaTarea = {
+                  'nomTarea': txtConNomTarea.text,
+                  'fecExpiracion': formatDate(_dateExp),
+                  'fecRecordatorio': formatDate(_dateRec),
+                  'desTarea': txtConDesTarea.text,
+                  'realizada': dropDownValue!.substring(0, 1),
+                  'idProfe': idProfe
+                };
+                if (widget.tareaModel == null) {
+                  tareaDB!.INSERT('Tarea', nuevaTarea).then((value) {
+                    var msj = (value > 0)
+                        ? 'La inserción fue exitosa!'
+                        : 'Ocurrió un error';
+                    var snackbar = SnackBar(content: Text(msj));
+                    ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                    Navigator.pop(context);
+                  });
+                  print(nuevaTarea);
+                } else {
+                  final tarea = {
+                    'idTarea': widget.tareaModel!.idTarea,
+                    'nomTarea': txtConNomTarea.text,
+                    'fecExpiracion': formatDate(_dateExp),
+                    'fecRecordatorio': formatDate(_dateRec),
+                    'desTarea': txtConDesTarea.text,
+                    'realizada': dropDownValue!.substring(0, 1),
+                    'idProfe': idProfe
+                  };
+                  tareaDB!.UPDATE_TAREA('Tarea', tarea).then((value) {
+                    GlobalValues.flagTask.value = !GlobalValues.flagTask.value;
+                    var msj = (value > 0)
+                        ? 'La actualización fue exitosa!'
+                        : 'Ocurrió un error';
+                    var snackbar = SnackBar(content: Text(msj));
+                    ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                    Navigator.pop(context);
+                  });
+                  print(tarea);
+                }
+              } else {
+                var snackbar = const SnackBar(
+                    content: Text('No se pudo encontrar el ID de la carrera'));
+                ScaffoldMessenger.of(context).showSnackBar(snackbar);
+              }
+            });
+          }
+        },
+        child: Text('Save Task'));
 
     return Scaffold(
       appBar: AppBar(
-        title: widget.carreraModel == null 
-        ? Text('Add Carrera')
-        : Text('Update Carrera'),
+        title: widget.tareaModel == null
+            ? Text('Agregar Tarea')
+            : Text('Editar Tarea'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            txtNameCarrera,
+            txtNomTarea,
+            space,
+            objFechaExp,
+            space,
+            objFechaRec,
+            space,
+            txtDesTarea,
+            space,
+            dropdownRealizada,
+            space,
+            dropdownProfesor,
             space,
             btnGuardar
           ],
         ),
-        ),
+      ),
     );
   }
 }

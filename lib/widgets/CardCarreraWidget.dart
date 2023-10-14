@@ -36,7 +36,7 @@ class CardCarreraWidget extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => AddTarea(carreraModel: carreraModel))),
+                          builder: (context) => AddTarea())),
                   child: Image.asset(
                     'assets/strawberry.png',
                     height: 50,

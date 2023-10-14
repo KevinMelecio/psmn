@@ -27,7 +27,7 @@ class _CarreraScreenState extends State<CarreraScreen> {
         actions: [
           IconButton(
               onPressed: () =>
-                  Navigator.pushNamed(context, '/addTarea').then((value) {
+                  Navigator.pushNamed(context, '/addCarrera').then((value) {
                     setState(() {});
                   }),
               icon: Icon(Icons.task))

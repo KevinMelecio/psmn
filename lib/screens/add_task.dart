@@ -35,7 +35,7 @@ class _AddTaskState extends State<AddTask> {
           dropDownValue = "Completado";
           break;
         case 'P':
-          dropDownValue = "Pendente";
+          dropDownValue = "Pendiente";
       }
     }
   }

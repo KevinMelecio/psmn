@@ -29,10 +29,10 @@ class TareaDB {
       CREATE TABLE Tarea(
         idTarea INTEGER PRIMARY KEY,
         nomTarea  VARCHAR(50),
-        fecExpiracion INTEGER,
-        fecRecordatorio INTEGER,
+        fecExpiracion VARCHAR(15),
+        fecRecordatorio VARCHAR(15),
         desTarea  VARCHAR(100),
-        realizada INTEGER,
+        realizada BOOL,
         idProfe INTEGER,
         FOREIGN KEY (idProfe) REFERENCES Profesor(idProfe)
       );
@@ -54,6 +54,17 @@ class TareaDB {
         nomCarrera  VARCHAR(50)
       );
     ''');
+
+    await _insertData(db);
+  }
+
+  Future<void> _insertData(Database db) async {
+    await db.rawInsert('''
+      INSERT INTO Carrera (nomCarrera) VALUES
+      ('Ing. Sistemas'),
+      ('Ing. Industrial'),
+      ('Ing. Bioquimica');
+    ''');
   }
 
   Future<int> INSERT(String tblName, Map<String, dynamic> data) async {
@@ -73,23 +84,43 @@ class TareaDB {
         where: 'idProfe = ?', whereArgs: [data['idProfe']]);
   }
 
+  Future<int> UPDATE_TAREA(String tblName, Map<String, dynamic> data) async {
+    var conexion = await database;
+    return conexion!.update(tblName, data,
+        where: 'idTarea = ?', whereArgs: [data['idTarea']]);
+  }
+
   Future<int> DELETE_CARRERA(String tblName, int idCarrera) async {
     var conexion = await database;
     return conexion!
         .delete(tblName, where: 'idCarrera = ?', whereArgs: [idCarrera]);
   }
 
-    Future<int> DELETE_PROFESOR(String tblName, int idProfe) async {
+  Future<int> DELETE_PROFESOR(String tblName, int idProfe) async {
     var conexion = await database;
     return conexion!
         .delete(tblName, where: 'idProfe = ?', whereArgs: [idProfe]);
   }
 
+  Future<int> DELETE_TAREA(String tblName, int idTarea) async {
+    var conexion = await database;
+    return conexion!
+        .delete(tblName, where: 'idTarea = ?', whereArgs: [idTarea]);
+  }
 
   Future<List<TareaModel>> GETALLTAREAS() async {
-    var conexion = await database;
-    var result = await conexion!.query('Tarea');
-    return result.map((task) => TareaModel.fromMap(task)).toList();
+    var db = await database;
+    var result = await db!.rawQuery('''
+    SELECT Tarea.*, Profesor.nomProfe
+    FROM Tarea
+    INNER JOIN Profesor ON Tarea.idProfe = Profesor.idProfe
+  ''');
+    List<TareaModel> tareas = [];
+    for (final Map<String, dynamic> row in result) {
+      final tarea = TareaModel.fromMap(row);
+      tareas.add(tarea);
+    }
+    return tareas;
   }
 
   Future<List<ProfesorModel>> GETALLPROFESOR() async {
@@ -105,6 +136,21 @@ class TareaDB {
       profesores.add(profesor);
     }
     return profesores;
+  }
+
+  Future<int?> GETPROFESORID(String nomProfe) async {
+    final db = await database;
+    if (db != null) {
+      final result = await db.rawQuery(
+        'SELECT idProfe FROM Profesor WHERE nomProfe = ?',
+        [nomProfe],
+      );
+      if (result.isNotEmpty) {
+        return result.first['idProfe'] as int?;
+      }
+    }
+    // Si no se encuentra ninguna carrera con el nombre dado o db es nulo, se retorna null
+    return null;
   }
 
   Future<int?> GETCARRERAID(String nomCarrera) async {
