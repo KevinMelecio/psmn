@@ -14,6 +14,7 @@ class TareasScreen extends StatefulWidget {
 
 class _TareasScreenState extends State<TareasScreen> {
   TareaDB? tareaDB;
+  String selectedFilter = 'Todas las Tareas';
   @override
   void initState() {
     super.initState();
@@ -26,6 +27,21 @@ class _TareasScreenState extends State<TareasScreen> {
       appBar: AppBar(
         title: Text('Tareas'),
         actions: [
+          DropdownButton<String>(
+            value: selectedFilter,
+            onChanged:(newValue) {
+              setState(() {
+                selectedFilter = newValue!;
+              });
+            },
+            items: ['Todas las Tareas', 'Completados', 'No Completados']
+            .map<DropdownMenuItem<String>>((String value){
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+                );
+            }).toList(),
+          ),
           IconButton(
               onPressed: () =>
                   Navigator.pushNamed(context, '/addTarea').then((value) {
@@ -45,9 +61,17 @@ class _TareasScreenState extends State<TareasScreen> {
                 return ListView.builder(
                   itemCount: snapshot.data!.length,
                   itemBuilder: (context, index) {
-                    return CardTareasWidget(
-                      tareaModel: snapshot.data![index], 
-                      tareaDB: tareaDB);
+                    //filtro
+                    final tareaModel = snapshot.data![index];
+                    if(selectedFilter == 'Todas las Tareas' || 
+                      (selectedFilter == 'Completados' && tareaModel.realizada == 'C') ||
+                      (selectedFilter == 'No Completados' && tareaModel.realizada == 'N')){
+                        return CardTareasWidget(
+                        tareaModel: snapshot.data![index], tareaDB: tareaDB);
+                      } else {
+                        return Container();
+                      };
+                    
                   },
                 );
               } else {

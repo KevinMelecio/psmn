@@ -55,10 +55,10 @@ class TareaDB {
       );
     ''');
 
-    await _insertData(db);
+    await _insertCarrera(db);
   }
 
-  Future<void> _insertData(Database db) async {
+  Future<void> _insertCarrera(Database db) async {
     await db.rawInsert('''
       INSERT INTO Carrera (nomCarrera) VALUES
       ('Ing. Sistemas'),
@@ -88,6 +88,15 @@ class TareaDB {
     var conexion = await database;
     return conexion!.update(tblName, data,
         where: 'idTarea = ?', whereArgs: [data['idTarea']]);
+  }
+
+  Future<void> UPDATE_TAREA_REALIZADA(TareaModel tarea) async {
+    var db = await database;
+    await db!.update('Tarea', 
+      {'realizada' : tarea.realizada},
+      where: 'idTarea = ?',
+      whereArgs: [tarea.idTarea]
+    );
   }
 
   Future<int> DELETE_CARRERA(String tblName, int idCarrera) async {

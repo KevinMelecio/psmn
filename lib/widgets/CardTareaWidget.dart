@@ -6,13 +6,18 @@ import 'package:pmsn20232/database/tareadb.dart';
 import 'package:pmsn20232/models/tarea_model.dart';
 import 'package:pmsn20232/screens/add_tarea.dart';
 
-class CardTareasWidget extends StatelessWidget {
+class CardTareasWidget extends StatefulWidget {
   CardTareasWidget(
       {super.key, required this.tareaModel, required this.tareaDB});
 
   TareaDB? tareaDB;
   TareaModel tareaModel;
 
+  @override
+  State<CardTareasWidget> createState() => _CardTareasWidgetState();
+}
+
+class _CardTareasWidgetState extends State<CardTareasWidget> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -27,13 +32,32 @@ class CardTareasWidget extends StatelessWidget {
           children: [
             Column(
               children: [
-                Text(tareaModel.nomTarea!),
-                Text(tareaModel.fecExpiracion!.toString()),
-                //Aqui se ocupa un checklist para modificar valor de Reealizado
+                Text(widget.tareaModel.nomTarea!),
+                Text(widget.tareaModel.fecExpiracion!.toString()),
               ],
             ),
             Expanded(
-              child: Container(),
+              child: Container(
+                child: Column(
+                  children: [
+                    Checkbox(
+                        value: widget.tareaModel.realizada == 'C',
+                        onChanged: (bool? newValue) {
+                          if (newValue != null) {
+                            setState(() {
+                              widget.tareaModel.realizada =
+                                  newValue ? 'C' : 'N';
+                              widget.tareaDB!
+                                  .UPDATE_TAREA_REALIZADA(widget.tareaModel);
+                            });
+                          }
+                        }),
+                    widget.tareaModel.realizada! == 'N'
+                        ? Text('No Completado')
+                        : Text('Completado')
+                  ],
+                ),
+              ),
             ),
             Column(
               children: [
@@ -42,7 +66,7 @@ class CardTareasWidget extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              AddTarea(tareaModel: tareaModel))),
+                              AddTarea(tareaModel: widget.tareaModel))),
                   child: Image.asset(
                     'assets/strawberry.png',
                     height: 50,
@@ -59,9 +83,9 @@ class CardTareasWidget extends StatelessWidget {
                               actions: [
                                 TextButton(
                                     onPressed: () {
-                                      tareaDB!
+                                      widget.tareaDB!
                                           .DELETE_TAREA('Tarea',
-                                              tareaModel.idTarea!)
+                                              widget.tareaModel.idTarea!)
                                           .then((value) => {
                                                 Navigator.pop(context),
                                                 GlobalValues.flagTask.value =

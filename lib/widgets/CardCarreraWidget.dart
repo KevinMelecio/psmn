@@ -14,12 +14,12 @@ class CardCarreraWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(50.0),
           color: Color.fromARGB(255, 95, 64, 165)),
-        margin: EdgeInsets.only(top: 10),
+        margin: EdgeInsets.only(top:0),
         padding: EdgeInsets.all(8),
         child: Row(
           children: [
