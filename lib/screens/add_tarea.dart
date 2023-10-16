@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:pmsn20232/assets/global_values.dart';
 import 'package:pmsn20232/database/tareadb.dart';
 import 'package:pmsn20232/models/tarea_model.dart';
+
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 class AddTarea extends StatefulWidget {
   AddTarea({super.key, this.tareaModel});
@@ -13,6 +17,9 @@ class AddTarea extends StatefulWidget {
 }
 
 class _AddTareaState extends State<AddTarea> {
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
   TextEditingController txtConNomTarea = TextEditingController();
   TextEditingController txtConFExp = TextEditingController();
   TextEditingController txtConFRec = TextEditingController();
@@ -23,7 +30,6 @@ class _AddTareaState extends State<AddTarea> {
   List<String> profesores = [];
   DateTime _dateExp = DateTime.now();
   DateTime _dateRec = DateTime.now();
-
 
   TareaDB? tareaDB;
 
@@ -68,6 +74,12 @@ class _AddTareaState extends State<AddTarea> {
           break;
       }
       selectedProfe = widget.tareaModel!.nomProfe;
+
+      var initializationSettingsAndroid =
+          AndroidInitializationSettings('app_icon');
+      var initializationSettings =
+          InitializationSettings(android: initializationSettingsAndroid);
+      flutterLocalNotificationsPlugin.initialize(initializationSettings);
     }
 
     tareaDB!.GETALLPROFESOR().then((value) {
@@ -83,8 +95,7 @@ class _AddTareaState extends State<AddTarea> {
   void _showDatePicker(bool isDateExp) {
     showDatePicker(
             context: context,
-            initialDate: isDateExp == true ?
-                  _dateExp: _dateRec,
+            initialDate: isDateExp == true ? _dateExp : _dateRec,
             firstDate: DateTime(2015),
             lastDate: DateTime(2025))
         .then(
@@ -98,6 +109,52 @@ class _AddTareaState extends State<AddTarea> {
         });
       },
     );
+  }
+
+  Future<void> showNotification(
+      String tarea, String descripcion, String fecExpiracion) async {
+    var androidP = AndroidNotificationDetails(
+      'Your_chanenel_id',
+      'Tareas',
+      importance: Importance.high,
+      priority: Priority.high,
+    );
+
+    var plataforma = NotificationDetails(android: androidP);
+
+    await flutterLocalNotificationsPlugin.show(
+        0,
+        'Tarea: ${txtConNomTarea.text}      Fecha de Vencimiento: $fecExpiracion',
+        '$descripcion',
+        plataforma);
+  }
+
+  Future<void> scheduleNotification(String tarea, String descripcion,
+      String fechaExp, String fechaRec) async {
+    var androidP = AndroidNotificationDetails(
+      'Your_chanenel_id',
+      'Tareas',
+      importance: Importance.high,
+      priority: Priority.high,
+    );
+
+    var plataforma = NotificationDetails(android: androidP);
+    DateTime fechaRecordatorioDATE = DateTime.parse(fechaRec);
+    tz.initializeTimeZones();
+    final location = tz.getLocation('America/Mexico_City');
+    tz.TZDateTime fechaRecordatorio =
+        tz.TZDateTime.from(fechaRecordatorioDATE, location);
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+        0,
+        'Tarea: ${txtConNomTarea.text}      Fecha de Vencimiento: $fechaExp',
+        '$descripcion',
+        fechaRecordatorio,
+        plataforma,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+        androidAllowWhileIdle: true,
+        payload: 'Custom_Sound',
+        matchDateTimeComponents: DateTimeComponents.dateAndTime);
   }
 
   String formatDate(DateTime date) {
@@ -205,6 +262,10 @@ class _AddTareaState extends State<AddTarea> {
 
     final ElevatedButton btnGuardar = ElevatedButton(
         onPressed: () {
+          showNotification(txtConNomTarea.text, txtConDesTarea.text,
+              formatDate(_dateExp));
+          scheduleNotification(txtConNomTarea.text, txtConDesTarea.text,
+              formatDate(_dateExp), formatDate(_dateRec));
           if (selectedProfe != null) {
             tareaDB!.GETPROFESORID(selectedProfe!).then((idProfe) {
               if (idProfe != null) {

@@ -2,6 +2,7 @@ import 'package:day_night_switcher/day_night_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:pmsn20232/assets/global_values.dart';
 import 'package:pmsn20232/assets/styles_app.dart';
+import 'package:pmsn20232/screens/calendario.dart';
 import 'package:pmsn20232/screens/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -41,6 +42,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       },
                       icon: const Icon(Icons.settings))),
             ),
+            body: Calendario(),
             drawer: createDrawer(),
           );
         });
