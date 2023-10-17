@@ -28,7 +28,7 @@ class _AddProfesorState extends State<AddProfesor> {
 
     if (widget.profesorModel != null) {
       txtConNomProfe.text = widget.profesorModel!.nomProfe ?? '';
-      txtConEmail.text = widget.profesorModel!.nomProfe ?? '';
+      txtConEmail.text = widget.profesorModel!.email ?? '';
       selectedCarrera = widget.profesorModel!.nomCarrera;
     }
 

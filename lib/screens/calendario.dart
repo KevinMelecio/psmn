@@ -1,6 +1,6 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
+import 'package:pmsn20232/assets/global_values.dart';
+import 'package:pmsn20232/assets/styles_app.dart';
 import 'package:pmsn20232/database/tareadb.dart';
 import 'package:pmsn20232/models/tarea_model.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -14,105 +14,133 @@ class Calendario extends StatefulWidget {
 
 class _CalendarioState extends State<Calendario> {
   TareaDB? tareaDB;
-
-  List<TareaModel> tareas = [];
   DateTime today = DateTime.now();
+  DateTime? _selectedDay;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     tareaDB = TareaDB();
-    getTareasFromDB();
   }
 
-  // void _oneDaySelected(DateTime day, DateTime focusedDay) {
-  //   setState(() {
-  //     today = day;
-  //   });
-  //   print("Selected Day = " + today.toString().split(" ")[0]);
-
-  //   bool hasTarea = tareas.any((tarea) {
-  //     if (tarea.fecExpiracion != null) {
-  //       final fechaTarea = DateTime.parse(tarea.fecExpiracion!);
-  //       return isSameDay(fechaTarea, day);
-  //     }
-  //     return false; // O maneja de otra manera los casos en los que la fecha es nula.
-  //   });
-
-  //   CalendarStyle calendarStyle = CalendarStyle(
-  //     selectedDecoration: BoxDecoration(
-  //       color: Colors.blue, // Color de fondo cuando se selecciona un día
-  //     ),
-  //     todayDecoration: BoxDecoration(
-  //       color: Colors.red, // Color de fondo del día actual
-  //     ),
-  //     markersMaxCount: 1,
-  //     markersAlignment: Alignment.bottomCenter,
-  //     markerDecoration: BoxDecoration(
-  //       color: hasTarea
-  //           ? Colors.green
-  //           : Colors
-  //               .transparent, // Color de fondo de los días con tareas o transparente si no hay tareas
-  //       shape: BoxShape.circle,
-  //     ),
-  //   );
-  // }
-
-  Future<void> getTareasFromDB() async {
-    final tareasObtenidas = await tareaDB?.GETALLTAREAS();
-    if (tareasObtenidas != null) {
-      setState(() {
-        tareas = tareasObtenidas;
-      });
-    }
+  List<TareaModel> obtenerTareas(DateTime day, List<TareaModel> tareas) {
+    return tareas
+        .where((tarea) => isSameDay(DateTime.parse(tarea.fecExpiracion!), day))
+        .toList();
   }
 
-  bool hasTarea(DateTime day) {
-    return tareas.any((tarea) {
-      final fechaTarea = DateTime.parse(tarea.fecExpiracion!);
-      return isSameDay(fechaTarea, day);
-    });
+  void mostrar_fechas(DateTime day, List<TareaModel> tareas) {
+    List<TareaModel> dias_tarea = obtenerTareas(day, tareas);
+
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return ListView.builder(
+            itemCount: dias_tarea.length,
+            itemBuilder: (context, index) {
+              return ValueListenableBuilder(
+                valueListenable: GlobalValues.flagTheme,
+                builder: (context, value, _) {
+                  return Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 30, vertical: 12.0),
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50.0),
+                          color: value 
+                          ? StyleApp.darkCard(context)
+                          : StyleApp.lightCard(context)),
+                      child: Column(
+                            children: [
+                              Text(dias_tarea[index].nomTarea!, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),),
+                              Text(
+                                  'Descripcion ${tareas[index].desTarea}\nEstatus: ${tareas[index].realizada == 'C' ? 'Completado' : 'No Completado'}')
+                            ],
+                          )
+                    ),
+                  );
+                }
+              );
+            },
+          );
+        });
+  }
+
+  String formatDate(DateTime date) {
+    String day = date.day.toString().padLeft(2, '0');
+    return day;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: TableCalendar(
-        locale: 'en_US',
-        rowHeight: 43,
-        headerStyle:
-            HeaderStyle(formatButtonVisible: false, titleCentered: true),
-        availableGestures: AvailableGestures.all,
-        selectedDayPredicate: (day) => isSameDay(day, today),
-        focusedDay: today,
-        firstDay: DateTime.utc(2015, 10, 16),
-        lastDay: DateTime.utc(2030, 3, 14),
-        onDaySelected: (selectedDay, focusedDay) {
-          setState(() {
-            today = selectedDay;
-          });
-          print("Selected Day = " + today.toString().split(" ")[0]);
+    return Scaffold(
+      body: FutureBuilder<List<TareaModel>>(
+        future: tareaDB!.GETALLTAREAS(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return TableCalendar(
+              headerStyle:
+                  HeaderStyle(formatButtonVisible: false, titleCentered: true),
+              focusedDay: today,
+              firstDay: DateTime.utc(2015, 10, 16),
+              lastDay: DateTime.utc(2030, 3, 14),
+              selectedDayPredicate: (day) {
+                return isSameDay(_selectedDay, day);
+              },
+              eventLoader: (day) {
+                return obtenerTareas(day, snapshot.data!);
+              },
+              onDaySelected: (selectedDay, focusedDay) {
+                if (!isSameDay(_selectedDay, selectedDay)) {
+                  setState(() {
+                    _selectedDay = selectedDay;
+                    today = focusedDay;
+                    mostrar_fechas(selectedDay, snapshot.data!);
+                  });
+                }
+              },
+              calendarBuilders: CalendarBuilders(
+                  selectedBuilder: (context, day, focusedDay) => Container(
+                        margin: const EdgeInsets.all(4.0),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            color: Colors.blue, shape: BoxShape.circle),
+                        child: Text(formatDate(day)),
+                      ),
+                  markerBuilder: (context, day, events) {
+                    if (events.isNotEmpty) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.circular(6.0),
+                        ),
+                        width: 15.0,
+                        height: 15.0,
+                        child: Center(
+                          child: Text(
+                            events.length.toString(),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 10.0,
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                  }),
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text('Ocurrio un error'),
+            );
+          } else {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
         },
-        calendarBuilders: CalendarBuilders(
-          // markerBuilder:(context, day, events) {
-          //   if(hasTarea(day)){
-          //     return [
-          //       Container(
-          //         width: 5,
-          //         height: 5,
-          //         margin: EdgeInsets.all(2),
-          //         decoration: BoxDecoration(
-          //           color: Colors.green,
-          //           shape: BoxShape.circle,
-          //         ),
-          //       ),
-          //     ];
-          //   }
-          //   return [];
-          // },
-        ),
-        // onDaySelected: _oneDaySelected,
       ),
     );
   }

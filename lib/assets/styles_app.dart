@@ -13,7 +13,6 @@ class StyleApp{
   static ThemeData darkTheme(BuildContext context){
     final theme = ThemeData.dark();
     return theme.copyWith(
-      // primaryColor: const Color.fromARGB(211, 234, 234, 0)
       colorScheme: Theme.of(context).colorScheme.copyWith(
         primary: Color.fromARGB(210, 36, 15, 170)
       )
@@ -40,5 +39,21 @@ class StyleApp{
 
   static Color lightIconDrawer(BuildContext context){
     return Color.fromARGB(230, 11, 80, 32);
+  }
+
+    static Color darkLetter(BuildContext context){
+    return Colors.white;
+  }
+
+  static Color lightLetter(BuildContext context){
+    return Colors.black;
+  }
+
+    static Color darkCard(BuildContext context){
+    return Color.fromARGB(210, 51, 35, 159);
+  }
+
+  static Color lightCard(BuildContext context){
+    return Color.fromARGB(210, 43, 141, 73);
   }
 }
