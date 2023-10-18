@@ -119,14 +119,7 @@ class _TareasScreenState extends State<TareasScreen> {
                           } else {
                             return Container();
                           }
-                          // if(selectedFilter == 'Todas las Tareas' ||
-                          //   (selectedFilter == 'Completados' && tareaModel.realizada == 'C') ||
-                          //   (selectedFilter == 'No Completados' && tareaModel.realizada == 'N')){
-                          //     return CardTareasWidget(
-                          //     tareaModel: snapshot.data![index], tareaDB: tareaDB);
-                          //   } else {
-                          //     return Container();
-                          //   };
+
                         },
                       );
                     } else {
