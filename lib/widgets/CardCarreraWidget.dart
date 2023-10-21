@@ -4,7 +4,6 @@ import 'package:pmsn20232/assets/styles_app.dart';
 import 'package:pmsn20232/database/tareadb.dart';
 import 'package:pmsn20232/models/carrera_model.dart';
 import 'package:pmsn20232/screens/add_carrera.dart';
-import 'package:pmsn20232/screens/add_tarea.dart';
 
 class CardCarreraWidget extends StatelessWidget {
   CardCarreraWidget(

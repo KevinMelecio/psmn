@@ -21,6 +21,7 @@ class _PopularScreenState extends State<PopularScreen> {
     apiPopular = ApiPopular();
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,8 +40,8 @@ class _PopularScreenState extends State<PopularScreen> {
                 ),
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
-                print(snapshot.data![index]!.backdropPath);
-                return itemMovieWidget(snapshot.data![index]);
+                // print(snapshot.data![index]!.backdropPath);
+                return itemMovieWidget(snapshot.data![index], context);
               },
             );
           }else{
