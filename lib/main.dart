@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:pmsn20232/assets/global_values.dart';
 import 'package:pmsn20232/assets/styles_app.dart';
@@ -6,12 +7,20 @@ import 'package:pmsn20232/screens/dashboard_screen.dart';
 import 'package:pmsn20232/screens/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   bool rememberMe = prefs.getBool('rememberMe') ?? false;
   runApp(MyApp(rememberMe: rememberMe));
 }
+
+// void main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   SharedPreferences prefs = await SharedPreferences.getInstance();
+//   bool rememberMe = prefs.getBool('rememberMe') ?? false;
+//   runApp(MyApp(rememberMe: rememberMe));
+// }
 
 // void main() => runApp(const MyApp());
 

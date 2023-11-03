@@ -30,7 +30,6 @@ class _AddCarreraState extends State<AddCarrera> {
 
   @override
   Widget build(BuildContext context) {
-
     final txtNameCarrera = TextFormField(
       decoration: const InputDecoration(
         label: Text('Carrera'),
@@ -73,6 +72,7 @@ class _AddCarreraState extends State<AddCarrera> {
 
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: widget.carreraModel == null 
         ? Text('Add Carrera')

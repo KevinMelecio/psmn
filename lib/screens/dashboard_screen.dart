@@ -105,6 +105,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       : StyleApp.lightIconDrawer(context),
                   leading: Icon(Icons.task_alt_outlined),
                   trailing: Icon(Icons.chevron_right),
+                  title: Text('Favorites Movies'),
+                  onTap: () => Navigator.pushNamed(context, '/favorites'),
+                ),
+                ListTile(
+                  iconColor: value
+                      ? StyleApp.darkIconDrawer(context)
+                      : StyleApp.lightIconDrawer(context),
+                  leading: Icon(Icons.task_alt_outlined),
+                  trailing: Icon(Icons.chevron_right),
                   title: Text('Tareas'),
                   onTap: () => Navigator.pushNamed(context, '/tareas'),
                 ),

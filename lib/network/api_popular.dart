@@ -5,7 +5,7 @@ import 'package:pmsn20232/models/popular_model.dart';
 
 class ApiPopular {
   Uri link = Uri.parse(
-      'https://api.themoviedb.org/3/movie/popular?api_key=5019e68de7bc112f4e4337a500b96c56&language=es-MX&page=1');
+      'https://api.themoviedb.org/3/movie/popular?api_key=759124af8786e8a0ada6893e90db607c&language=es-MX&page=1');
 
   Future<List<PopularModel>?> getAllPopular() async {
     var response = await http.get(link);
@@ -18,8 +18,21 @@ class ApiPopular {
     return null;
   }
 
+  Future<List<PopularModel>?> getMoviesFavorites(List<int> movieIds) async {
+    var response = await http.get(link);
+    if (response.statusCode == 200) {
+      var jsonResult = jsonDecode(response.body)['results'] as List;
+      var popularMovies = jsonResult
+          .map((popular) => PopularModel.fromMap(popular))
+          .toList();
+      var filteredMovies = popularMovies.where((movie) => movieIds.contains(movie.id)).toList();
+      return filteredMovies;
+    }
+    return null;
+  }
+
   Future<String> getVideo(String id) async {
-    Uri video = Uri.parse('https://api.themoviedb.org/3/movie/$id/videos?api_key=8af6bb9b252f0faa0ba8ab02575db84d');
+    Uri video = Uri.parse('https://api.themoviedb.org/3/movie/$id/videos?api_key=759124af8786e8a0ada6893e90db607c');
     var response = await http.get(video);
     var jsonResult = jsonDecode(response.body)['results'] as List;
     if(response.statusCode == 200){
@@ -30,7 +43,7 @@ class ApiPopular {
   }
 
   Future<List<dynamic>?> castMovie(int id) async{
-    Uri cast = Uri.parse('https://api.themoviedb.org/3/movie/$id/credits?api_key=8af6bb9b252f0faa0ba8ab02575db84d');
+    Uri cast = Uri.parse('https://api.themoviedb.org/3/movie/$id/credits?api_key=759124af8786e8a0ada6893e90db607c');
     var response = await http.get(cast);
     var jsonResult = jsonDecode(response.body)['cast'] as List;
     if (response.statusCode == 200) {

@@ -101,6 +101,7 @@ class _AddTaskState extends State<AddTask> {
         child: Text('Save Task'));
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
           title: widget.taskModel == null
               ? Text("Add Task")

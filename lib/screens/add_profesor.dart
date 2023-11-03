@@ -126,6 +126,7 @@ class _AddProfesorState extends State<AddProfesor> {
         child: Text('Save Task'));
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: widget.profesorModel == null
             ? Text('Agregar Profesor')

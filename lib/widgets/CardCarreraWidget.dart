@@ -3,6 +3,7 @@ import 'package:pmsn20232/assets/global_values.dart';
 import 'package:pmsn20232/assets/styles_app.dart';
 import 'package:pmsn20232/database/tareadb.dart';
 import 'package:pmsn20232/models/carrera_model.dart';
+import 'package:pmsn20232/models/profesor_model.dart';
 import 'package:pmsn20232/screens/add_carrera.dart';
 
 class CardCarreraWidget extends StatelessWidget {
@@ -63,40 +64,62 @@ class CardCarreraWidget extends StatelessWidget {
                           onPressed: () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => AddCarrera(carreraModel: carreraModel,))),
+                                  builder: (context) => AddCarrera(
+                                        carreraModel: carreraModel,
+                                      ))),
                           icon: Icon(Icons.edit)),
                       IconButton(
-                          onPressed: () {
-                            showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: Text('Mensaje del sistema'),
-                                    content: Text('¿Deseas borrar la tarea?'),
-                                    actions: [
-                                      TextButton(
-                                          onPressed: () {
-                                            tareaDB!
-                                                .DELETE_CARRERA('Carrera',
-                                                    carreraModel.idCarrera!)
-                                                .then((value) => {
-                                                      Navigator.pop(context),
-                                                      GlobalValues
-                                                              .flagTask.value =
-                                                          !GlobalValues
-                                                              .flagTask.value
-                                                    });
-                                          },
-                                          child: Text('Si')),
-                                      TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context),
-                                          child: Text('No'))
-                                    ],
-                                  );
+  onPressed: () {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return FutureBuilder<List<ProfesorModel>>(
+          future: tareaDB!.GETALLPROFESOR(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator();
+            } else if (snapshot.hasData) {
+              final profesores = snapshot.data;
+              final tieneCarreraVinculada = profesores!.any((profesor) =>
+                  profesor.idCarrera == carreraModel.idCarrera);
+
+              return AlertDialog(
+                title: Text('Mensaje del sistema'),
+                content: tieneCarreraVinculada
+                    ? Text(
+                        'No puedes borrar la carrera debido a que está vinculada a un profesor.')
+                    : Text('¿Deseas borrar la carrera?'),
+                actions: [
+                  if (!tieneCarreraVinculada)
+                    TextButton(
+                      onPressed: () {
+                        tareaDB!
+                            .DELETE_CARRERA('Carrera', carreraModel.idCarrera!)
+                            .then((value) => {
+                                  Navigator.pop(context),
+                                  GlobalValues.flagTask.value =
+                                      !GlobalValues.flagTask.value
                                 });
-                          },
-                          icon: Icon(Icons.delete))
+                      },
+                      child: Text('Si'),
+                    ),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text('No'),
+                  ),
+                ],
+              );
+            } else {
+              return Text('Error al obtener la lista de profesores.');
+            }
+          },
+        );
+      },
+    );
+  },
+  icon: Icon(Icons.delete),
+)
+
                     ],
                   )
                 ],

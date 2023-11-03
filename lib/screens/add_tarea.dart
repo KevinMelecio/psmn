@@ -37,6 +37,7 @@ class _AddTareaState extends State<AddTarea> {
   void initState() {
     super.initState();
     tareaDB = TareaDB();
+
     if (widget.tareaModel != null) {
       txtConNomTarea.text =
           widget.tareaModel != null ? widget.tareaModel!.nomTarea! : '';
@@ -74,12 +75,6 @@ class _AddTareaState extends State<AddTarea> {
           break;
       }
       selectedProfe = widget.tareaModel!.nomProfe;
-
-      var initializationSettingsAndroid =
-          AndroidInitializationSettings('app_icon');
-      var initializationSettings =
-          InitializationSettings(android: initializationSettingsAndroid);
-      flutterLocalNotificationsPlugin.initialize(initializationSettings);
     }
 
     tareaDB!.GETALLPROFESOR().then((value) {
@@ -90,6 +85,60 @@ class _AddTareaState extends State<AddTarea> {
             .toList();
       });
     });
+
+    var initializationSettingsAndroid =
+        AndroidInitializationSettings('app_icon');
+    var initializationSettings =
+        InitializationSettings(android: initializationSettingsAndroid);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
+
+  Future<void> showNotification(
+      String tarea, String fecExpiracion) async {
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'Your_channel_id',
+      'Tareas',
+      channelDescription: 'Descripción del canal',
+      importance: Importance.high,
+      priority: Priority.high,
+    );
+
+    var plataforma =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+
+    await flutterLocalNotificationsPlugin.show(
+        0,
+        'Tarea: ${txtConNomTarea.text}',
+        'Fecha de Vencimiento: $fecExpiracion',
+        plataforma);
+  }
+
+  Future<void> scheduleNotification(String tarea,
+      String fechaExp, String fechaRec) async {
+    var androidP = AndroidNotificationDetails(
+      'Your_chanenel_id',
+      'Tareas',
+      importance: Importance.high,
+      priority: Priority.high,
+    );
+
+    var plataforma = NotificationDetails(android: androidP);
+    DateTime fechaRecordatorioDATE = DateTime.parse(fechaRec);
+    tz.initializeTimeZones();
+    final location = tz.getLocation('America/Mexico_City');
+    tz.TZDateTime fechaRecordatorio =
+        tz.TZDateTime.from(fechaRecordatorioDATE, location);
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+        0,
+        'Tarea: ${tarea}',
+        'Fecha de Vencimiento: ${fechaExp}',
+        fechaRecordatorio,
+        plataforma,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+        androidAllowWhileIdle: true,
+        payload: 'Custom_Sound',
+        matchDateTimeComponents: DateTimeComponents.dateAndTime);
   }
 
   void _showDatePicker(bool isDateExp) {
@@ -109,52 +158,6 @@ class _AddTareaState extends State<AddTarea> {
         });
       },
     );
-  }
-
-  Future<void> showNotification(
-      String tarea, String descripcion, String fecExpiracion) async {
-    var androidP = AndroidNotificationDetails(
-      'Your_chanenel_id',
-      'Tareas',
-      importance: Importance.high,
-      priority: Priority.high,
-    );
-
-    var plataforma = NotificationDetails(android: androidP);
-
-    await flutterLocalNotificationsPlugin.show(
-        0,
-        'Tarea: ${txtConNomTarea.text}      Fecha de Vencimiento: $fecExpiracion',
-        '$descripcion',
-        plataforma);
-  }
-
-  Future<void> scheduleNotification(String tarea, String descripcion,
-      String fechaExp, String fechaRec) async {
-    var androidP = AndroidNotificationDetails(
-      'Your_chanenel_id',
-      'Tareas',
-      importance: Importance.high,
-      priority: Priority.high,
-    );
-
-    var plataforma = NotificationDetails(android: androidP);
-    DateTime fechaRecordatorioDATE = DateTime.parse(fechaRec);
-    tz.initializeTimeZones();
-    final location = tz.getLocation('America/Mexico_City');
-    tz.TZDateTime fechaRecordatorio =
-        tz.TZDateTime.from(fechaRecordatorioDATE, location);
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-        0,
-        'Tarea: ${txtConNomTarea.text}      Fecha de Vencimiento: $fechaExp',
-        '$descripcion',
-        fechaRecordatorio,
-        plataforma,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
-        androidAllowWhileIdle: true,
-        payload: 'Custom_Sound',
-        matchDateTimeComponents: DateTimeComponents.dateAndTime);
   }
 
   String formatDate(DateTime date) {
@@ -263,10 +266,6 @@ class _AddTareaState extends State<AddTarea> {
 
     final ElevatedButton btnGuardar = ElevatedButton(
         onPressed: () {
-          showNotification(txtConNomTarea.text, txtConDesTarea.text,
-              formatDate(_dateExp));
-          scheduleNotification(txtConNomTarea.text, txtConDesTarea.text,
-              formatDate(_dateExp), formatDate(_dateRec));
           if (selectedProfe != null) {
             tareaDB!.GETPROFESORID(selectedProfe!).then((idProfe) {
               if (idProfe != null) {
@@ -286,6 +285,11 @@ class _AddTareaState extends State<AddTarea> {
                     var snackbar = SnackBar(content: Text(msj));
                     ScaffoldMessenger.of(context).showSnackBar(snackbar);
                     Navigator.pop(context);
+                    showNotification(txtConNomTarea.text, formatDate(_dateExp));
+                    scheduleNotification(
+                        txtConNomTarea.text,
+                        formatDate(_dateExp),
+                        formatDate(_dateRec));
                   });
                   print(nuevaTarea);
                 } else {
@@ -320,6 +324,7 @@ class _AddTareaState extends State<AddTarea> {
         child: Text('Save Task'));
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: widget.tareaModel == null
             ? Text('Agregar Tarea')

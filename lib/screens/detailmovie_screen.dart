@@ -3,10 +3,12 @@ import 'dart:ui';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:pmsn20232/assets/global_values.dart';
 import 'package:pmsn20232/database/agendadb.dart';
 import 'package:pmsn20232/models/favmovie_model.dart';
 import 'package:pmsn20232/models/popular_model.dart';
 import 'package:pmsn20232/network/api_popular.dart';
+import 'package:pmsn20232/screens/favoritemovie_screen.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class DetailMovieScreen extends StatefulWidget {
@@ -63,21 +65,6 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
                   color: Colors.white.withOpacity(0.9),
                 ),
               ),
-              //     Container(
-              //   decoration: BoxDecoration(
-              //     image: DecorationImage(
-              //         image: NetworkImage(
-              //             'http://image.tmdb.org/t/p/w500${movie!.posterPath}'),,
-              //         fit: BoxFit.cover),
-              //   ),
-              //   child: BackdropFilter(
-              //     filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-              //     child: Container(
-              //       color: Colors.black.withOpacity(0.4),
-              //     ),
-              //   ),
-              // ),
-
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
@@ -134,6 +121,8 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
                                             fontWeight: FontWeight.bold)),
                                     onPressed: () async {
                                       if (_isFavorite) {
+                                        GlobalValues.flagTask.value =
+                                            !GlobalValues.flagTask.value;
                                         final deletedRows = await agendaDB!
                                             .DELETE_FAV(movie!.id!)
                                             .then((value) {
@@ -148,13 +137,14 @@ class _DetailMovieScreenState extends State<DetailMovieScreen> {
                                             _isFavorite = false;
                                           });
                                         });
-
                                         if (deletedRows > 0) {
                                           setState(() {
                                             _isFavorite = false;
                                           });
                                         }
                                       } else {
+                                        GlobalValues.flagTask.value =
+                                            !GlobalValues.flagTask.value;
                                         final favMovie =
                                             FavMoviesModel(pelicula: movie!.id);
                                         final inserteId = await agendaDB!
