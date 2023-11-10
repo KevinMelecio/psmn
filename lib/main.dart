@@ -46,9 +46,7 @@ class _MyAppState extends State<MyApp> {
         builder: (context, value, _) {
           return MaterialApp(
               debugShowCheckedModeBanner: false,
-              home: widget.rememberMe 
-              ? DashboardScreen()
-              : LoginScreen(),
+              home: widget.rememberMe ? DashboardScreen() : LoginScreen(),
               routes: getRoutes(),
               theme: value
                   ? StyleApp.darkTheme(context)

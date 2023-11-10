@@ -93,8 +93,7 @@ class _AddTareaState extends State<AddTarea> {
     flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
-  Future<void> showNotification(
-      String tarea, String fecExpiracion) async {
+  Future<void> showNotification(String tarea, String fecExpiracion) async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       'Your_channel_id',
       'Tareas',
@@ -113,8 +112,8 @@ class _AddTareaState extends State<AddTarea> {
         plataforma);
   }
 
-  Future<void> scheduleNotification(String tarea,
-      String fechaExp, String fechaRec) async {
+  Future<void> scheduleNotification(
+      String tarea, String fechaExp, String fechaRec) async {
     var androidP = AndroidNotificationDetails(
       'Your_chanenel_id',
       'Tareas',
@@ -128,12 +127,8 @@ class _AddTareaState extends State<AddTarea> {
     final location = tz.getLocation('America/Mexico_City');
     tz.TZDateTime fechaRecordatorio =
         tz.TZDateTime.from(fechaRecordatorioDATE, location);
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-        0,
-        'Tarea: ${tarea}',
-        'Fecha de Vencimiento: ${fechaExp}',
-        fechaRecordatorio,
-        plataforma,
+    await flutterLocalNotificationsPlugin.zonedSchedule(0, 'Tarea: ${tarea}',
+        'Fecha de Vencimiento: ${fechaExp}', fechaRecordatorio, plataforma,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
         androidAllowWhileIdle: true,
@@ -286,10 +281,8 @@ class _AddTareaState extends State<AddTarea> {
                     ScaffoldMessenger.of(context).showSnackBar(snackbar);
                     Navigator.pop(context);
                     showNotification(txtConNomTarea.text, formatDate(_dateExp));
-                    scheduleNotification(
-                        txtConNomTarea.text,
-                        formatDate(_dateExp),
-                        formatDate(_dateRec));
+                    scheduleNotification(txtConNomTarea.text,
+                        formatDate(_dateExp), formatDate(_dateRec));
                   });
                   print(nuevaTarea);
                 } else {

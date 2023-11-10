@@ -22,28 +22,30 @@ class ApiPopular {
     var response = await http.get(link);
     if (response.statusCode == 200) {
       var jsonResult = jsonDecode(response.body)['results'] as List;
-      var popularMovies = jsonResult
-          .map((popular) => PopularModel.fromMap(popular))
-          .toList();
-      var filteredMovies = popularMovies.where((movie) => movieIds.contains(movie.id)).toList();
+      var popularMovies =
+          jsonResult.map((popular) => PopularModel.fromMap(popular)).toList();
+      var filteredMovies =
+          popularMovies.where((movie) => movieIds.contains(movie.id)).toList();
       return filteredMovies;
     }
     return null;
   }
 
   Future<String> getVideo(String id) async {
-    Uri video = Uri.parse('https://api.themoviedb.org/3/movie/$id/videos?api_key=759124af8786e8a0ada6893e90db607c');
+    Uri video = Uri.parse(
+        'https://api.themoviedb.org/3/movie/$id/videos?api_key=759124af8786e8a0ada6893e90db607c');
     var response = await http.get(video);
     var jsonResult = jsonDecode(response.body)['results'] as List;
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       return jsonResult[0]['key'];
-    }else{
+    } else {
       return '';
     }
   }
 
-  Future<List<dynamic>?> castMovie(int id) async{
-    Uri cast = Uri.parse('https://api.themoviedb.org/3/movie/$id/credits?api_key=759124af8786e8a0ada6893e90db607c');
+  Future<List<dynamic>?> castMovie(int id) async {
+    Uri cast = Uri.parse(
+        'https://api.themoviedb.org/3/movie/$id/credits?api_key=759124af8786e8a0ada6893e90db607c');
     var response = await http.get(cast);
     var jsonResult = jsonDecode(response.body)['cast'] as List;
     if (response.statusCode == 200) {

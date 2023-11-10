@@ -88,7 +88,7 @@ class _AddTaskState extends State<AddTask> {
               'dscTask': txtConDsc.text,
               'sttTask': dropDownValue!.substring(0, 1)
             }).then((value) {
-              GlobalValues.flagTask.value= !GlobalValues.flagTask.value;
+              GlobalValues.flagTask.value = !GlobalValues.flagTask.value;
               var msj = (value > 0)
                   ? 'La actualización fue exitosa!'
                   : 'Ocurrió un error';

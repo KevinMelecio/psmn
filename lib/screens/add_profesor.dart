@@ -100,11 +100,11 @@ class _AddProfesorState extends State<AddProfesor> {
                   });
                 } else {
                   final profesor = {
-                  'idProfe': widget.profesorModel!.idProfe,
-                  'nomProfe': txtConNomProfe.text,
-                  'email': txtConEmail.text,
-                  'idCarrera': idCarrera
-                };
+                    'idProfe': widget.profesorModel!.idProfe,
+                    'nomProfe': txtConNomProfe.text,
+                    'email': txtConEmail.text,
+                    'idCarrera': idCarrera
+                  };
                   tareaDB!.UPDATE_PROFESOR('Profesor', profesor).then((value) {
                     GlobalValues.flagTask.value = !GlobalValues.flagTask.value;
                     var msj = (value > 0)

@@ -43,38 +43,38 @@ class _FavoriteMovieScreenState extends State<FavoriteMovieScreen> {
         title: Text('Favorites Movies'),
       ),
       body: ValueListenableBuilder(
-        valueListenable: GlobalValues.flagTask,
-        builder: (context, value, _) {
-          return FutureBuilder(
-            future: apiPopular!.getMoviesFavorites(movieIds),
-            builder: (BuildContext context,
-                AsyncSnapshot<List<PopularModel>?> snapshot) {
-              if (snapshot.hasData) {
-                return GridView.builder(
-                  padding: const EdgeInsets.all(10),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: .9,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                  ),
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (context, index) {
-                    // print(snapshot.data![index]!.backdropPath);
-                    return itemMovieWidget(snapshot.data![index], context);
-                  },
-                );
-              } else {
-                if (snapshot.hasError) {
-                  return Center(child: Text('Algo salió mal :()'));
+          valueListenable: GlobalValues.flagTask,
+          builder: (context, value, _) {
+            return FutureBuilder(
+              future: apiPopular!.getMoviesFavorites(movieIds),
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<PopularModel>?> snapshot) {
+                if (snapshot.hasData) {
+                  return GridView.builder(
+                    padding: const EdgeInsets.all(10),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: .9,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                    ),
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      // print(snapshot.data![index]!.backdropPath);
+                      return itemMovieWidget(snapshot.data![index], context);
+                    },
+                  );
                 } else {
-                  return CircularProgressIndicator();
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Algo salió mal :()'));
+                  } else {
+                    return CircularProgressIndicator();
+                  }
                 }
-              }
-            },
-          );
-        }
-      ),
+              },
+            );
+          }),
     );
   }
 }

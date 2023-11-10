@@ -57,25 +57,25 @@ class _ProfesorScreenState extends State<ProfesorScreen> {
             margin: EdgeInsets.all(5),
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 4),
             child: TextField(
-                controller: _searchController,
-                onChanged: (query) async {
-                  List<ProfesorModel> filtered = await _filterProfe(query);
-                  setState(() {
-                    filteredProfes = filtered;
-                  });
-                },
-                decoration: InputDecoration(
-                    labelText: 'Buscar Profe',
-                    suffix: IconButton(
-                      onPressed: () {
-                        _searchController.clear();
-                        setState(() {
-                          filteredProfes = [];
-                        });
-                      },
-                      icon: Icon(Icons.clear),
-                    )),
-              ),
+              controller: _searchController,
+              onChanged: (query) async {
+                List<ProfesorModel> filtered = await _filterProfe(query);
+                setState(() {
+                  filteredProfes = filtered;
+                });
+              },
+              decoration: InputDecoration(
+                  labelText: 'Buscar Profe',
+                  suffix: IconButton(
+                    onPressed: () {
+                      _searchController.clear();
+                      setState(() {
+                        filteredProfes = [];
+                      });
+                    },
+                    icon: Icon(Icons.clear),
+                  )),
+            ),
           ),
           Expanded(
             child: ValueListenableBuilder(
@@ -86,15 +86,14 @@ class _ProfesorScreenState extends State<ProfesorScreen> {
                     builder: (BuildContext context,
                         AsyncSnapshot<List<ProfesorModel>> snapshot) {
                       if (snapshot.hasData) {
-                        final profes = filteredProfes.isEmpty 
-                        ? snapshot.data!
-                        : filteredProfes;
+                        final profes = filteredProfes.isEmpty
+                            ? snapshot.data!
+                            : filteredProfes;
                         return ListView.builder(
                           itemCount: profes.length,
                           itemBuilder: (context, index) {
                             return CardProfesorWidget(
-                                profesorModel: profes[index],
-                                tareaDB: tareaDB);
+                                profesorModel: profes[index], tareaDB: tareaDB);
                           },
                         );
                       } else {

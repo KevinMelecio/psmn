@@ -61,15 +61,15 @@ class AgendaDB {
     return result.map((task) => TaskModel.fromMap(task)).toList();
   }
 
-    Future<List<FavMoviesModel>> GETALLFAVORITES() async {
+  Future<List<FavMoviesModel>> GETALLFAVORITES() async {
     var conexion = await database;
     var result = await conexion!.query('Favoritos');
     return result.map((task) => FavMoviesModel.fromMap(task)).toList();
   }
 
-  
   Future<int> DELETE_FAV(int id) async {
     var conexion = await database;
-    return conexion!.delete('Favoritos', where: 'pelicula = ?', whereArgs: [id]);
+    return conexion!
+        .delete('Favoritos', where: 'pelicula = ?', whereArgs: [id]);
   }
 }

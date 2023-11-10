@@ -73,8 +73,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
                 ListTile(
                   iconColor: value
-                  ? StyleApp.darkIconDrawer(context)
-                  : StyleApp.lightIconDrawer(context),
+                      ? StyleApp.darkIconDrawer(context)
+                      : StyleApp.lightIconDrawer(context),
                   leading: Image.asset('assets/strawberry.png'),
                   trailing: Icon(Icons.chevron_right),
                   title: Text('FruitApp'),
@@ -134,6 +134,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   trailing: Icon(Icons.chevron_right),
                   title: Text('Carrera'),
                   onTap: () => Navigator.pushNamed(context, '/carrera'),
+                ),
+                ListTile(
+                  iconColor: value
+                      ? StyleApp.darkIconDrawer(context)
+                      : StyleApp.lightIconDrawer(context),
+                  leading: Icon(Icons.task_alt_outlined),
+                  trailing: Icon(Icons.chevron_right),
+                  title: Text('Clima'),
+                  onTap: () => Navigator.pushNamed(context, '/clima'),
                 ),
                 ListTile(
                     iconColor: value

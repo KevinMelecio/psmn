@@ -1,4 +1,4 @@
-class ProfesorModel{
+class ProfesorModel {
   int? idProfe;
   String? nomProfe;
   int? idCarrera;
@@ -15,11 +15,10 @@ class ProfesorModel{
 
   factory ProfesorModel.fromMap(Map<String, dynamic> map) {
     return ProfesorModel(
-      idProfe: map['idProfe'],
-      nomProfe: map['nomProfe'],
-      idCarrera: map['idCarrera'],
-      email: map['email'],
-      nomCarrera: map['nomCarrera']
-    );
+        idProfe: map['idProfe'],
+        nomProfe: map['nomProfe'],
+        idCarrera: map['idCarrera'],
+        email: map['email'],
+        nomCarrera: map['nomCarrera']);
   }
 }

@@ -40,16 +40,22 @@ class CardProfesorWidget extends StatelessWidget {
                                 ? StyleApp.darkLetter(context)
                                 : StyleApp.lightLetter(context)),
                       ),
-                      Text(profesorModel.email!, style: TextStyle(
-                                fontSize: 15,
-                                color: value
-                                    ? StyleApp.darkLetter(context)
-                                    : StyleApp.lightLetter(context)),),
-                      Text(profesorModel.nomCarrera!, style: TextStyle(
-                                fontSize: 15,
-                                color: value
-                                    ? StyleApp.darkLetter(context)
-                                    : StyleApp.lightLetter(context)),)
+                      Text(
+                        profesorModel.email!,
+                        style: TextStyle(
+                            fontSize: 15,
+                            color: value
+                                ? StyleApp.darkLetter(context)
+                                : StyleApp.lightLetter(context)),
+                      ),
+                      Text(
+                        profesorModel.nomCarrera!,
+                        style: TextStyle(
+                            fontSize: 15,
+                            color: value
+                                ? StyleApp.darkLetter(context)
+                                : StyleApp.lightLetter(context)),
+                      )
                     ],
                   ),
                   Expanded(
@@ -61,7 +67,8 @@ class CardProfesorWidget extends StatelessWidget {
                           onPressed: () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => AddProfesor(profesorModel: profesorModel))),
+                                  builder: (context) => AddProfesor(
+                                      profesorModel: profesorModel))),
                           icon: Icon(Icons.edit)),
                       // GestureDetector(
                       //   onTap: () => Navigator.push(

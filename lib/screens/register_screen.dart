@@ -17,25 +17,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Register a User'),),
-      body: Column(
-        children: [
-          TextFormField(
-            controller: conNameUser,
-          ),
-          TextFormField(
-            controller: conEmailUser,
-          ),
-          TextFormField(
-            controller: conPwdUser,
-          ),
-          ElevatedButton(onPressed: () {
-            var email = conEmailUser.text;
-            var pwd = conPwdUser.text;
-            emailAuth.createUser(emailUser: email, pwdUser: pwd);
-          },
-          child: Text('Save User'))
-        ]),
+      appBar: AppBar(
+        title: Text('Register a User'),
+      ),
+      body: Column(children: [
+        TextFormField(
+          controller: conNameUser,
+        ),
+        TextFormField(
+          controller: conEmailUser,
+        ),
+        TextFormField(
+          controller: conPwdUser,
+        ),
+        ElevatedButton(
+            onPressed: () {
+              var email = conEmailUser.text;
+              var pwd = conPwdUser.text;
+              emailAuth.createUser(emailUser: email, pwdUser: pwd);
+            },
+            child: Text('Save User'))
+      ]),
     );
   }
 }

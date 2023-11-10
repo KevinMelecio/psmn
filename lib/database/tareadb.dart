@@ -92,11 +92,8 @@ class TareaDB {
 
   Future<void> UPDATE_TAREA_REALIZADA(TareaModel tarea) async {
     var db = await database;
-    await db!.update('Tarea', 
-      {'realizada' : tarea.realizada},
-      where: 'idTarea = ?',
-      whereArgs: [tarea.idTarea]
-    );
+    await db!.update('Tarea', {'realizada': tarea.realizada},
+        where: 'idTarea = ?', whereArgs: [tarea.idTarea]);
   }
 
   Future<int> DELETE_CARRERA(String tblName, int idCarrera) async {

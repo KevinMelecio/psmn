@@ -35,34 +35,33 @@ class _TaskScreenState extends State<TaskScreen> {
         ],
       ),
       body: ValueListenableBuilder(
-        valueListenable: GlobalValues.flagTask,
-        builder: (context, value,_) {
-          return FutureBuilder(
-            future: agendaDB!.GETALLTASK(),
-            builder:
-                (BuildContext context, AsyncSnapshot<List<TaskModel>> snapshot) {
-              if (snapshot.hasData) {
-                return ListView.builder(
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return CardTaskWidget(
-                        taskModel: snapshot.data![index], 
-                        agendaDB: agendaDB,
-                      );
-                    });
-              } else {
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text('Something was wrong!!'),
-                  );
+          valueListenable: GlobalValues.flagTask,
+          builder: (context, value, _) {
+            return FutureBuilder(
+              future: agendaDB!.GETALLTASK(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<TaskModel>> snapshot) {
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return CardTaskWidget(
+                          taskModel: snapshot.data![index],
+                          agendaDB: agendaDB,
+                        );
+                      });
                 } else {
-                  return CircularProgressIndicator();
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Something was wrong!!'),
+                    );
+                  } else {
+                    return CircularProgressIndicator();
+                  }
                 }
-              }
-            },
-          );
-        }
-      ),
+              },
+            );
+          }),
     );
   }
 }

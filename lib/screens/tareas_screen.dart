@@ -119,7 +119,6 @@ class _TareasScreenState extends State<TareasScreen> {
                           } else {
                             return Container();
                           }
-
                         },
                       );
                     } else {

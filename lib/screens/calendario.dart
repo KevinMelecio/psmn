@@ -87,11 +87,11 @@ class _CalendarioState extends State<Calendario> {
                 if (snapshot.hasData) {
                   return TableCalendar(
                     calendarStyle: CalendarStyle(
-                      todayDecoration: BoxDecoration(
-                        color: value ? StyleApp.darkCard(context).withBlue(250)
-                        : StyleApp.lightCard(context).withOpacity(0.5)
-                      )
-                    ),
+                        todayDecoration: BoxDecoration(
+                            color: value
+                                ? StyleApp.darkCard(context).withBlue(250)
+                                : StyleApp.lightCard(context)
+                                    .withOpacity(0.5))),
                     headerStyle: HeaderStyle(
                         formatButtonVisible: false, titleCentered: true),
                     focusedDay: today,

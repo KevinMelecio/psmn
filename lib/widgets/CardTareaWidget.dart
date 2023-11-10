@@ -84,7 +84,8 @@ class _CardTareasWidgetState extends State<CardTareasWidget> {
                           onPressed: () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => AddTarea(tareaModel: widget.tareaModel))),
+                                  builder: (context) =>
+                                      AddTarea(tareaModel: widget.tareaModel))),
                           icon: Icon(Icons.edit)),
                       IconButton(
                           onPressed: () {
