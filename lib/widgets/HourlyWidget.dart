@@ -11,6 +11,7 @@ class HourlyWidget extends StatelessWidget {
   HourlyWidget({super.key, required this.weatherDataHourly});
 
   RxInt cardIndex = GlobalController().getIndex();
+  String date = DateFormat("yMMMMd").format(DateTime.now());
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,10 @@ class HourlyWidget extends StatelessWidget {
         Container(
           margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
           alignment: Alignment.topCenter,
-          child: const Text("Today", style: TextStyle(fontSize: 18)),
+          child: Text(
+            date,
+            style: TextStyle(fontSize: 18),
+          ),
         ),
         hourlyList()
       ],
@@ -28,7 +32,7 @@ class HourlyWidget extends StatelessWidget {
 
   Widget hourlyList() {
     return Container(
-      height: 160,
+      height: 130,
       padding: const EdgeInsets.only(top: 10, bottom: 10),
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
@@ -41,14 +45,14 @@ class HourlyWidget extends StatelessWidget {
                     cardIndex.value = index;
                   },
                   child: Container(
-                    width: 90,
+                    width: 65,
                     margin: const EdgeInsets.only(left: 20, right: 5),
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(18),
                         boxShadow: [
                           BoxShadow(
                               offset: const Offset(0.5, 0),
-                              blurRadius: 30,
+                              blurRadius: 60,
                               spreadRadius: 1,
                               color: CustomColors.dividerLine.withAlpha(150)),
                         ],
@@ -97,12 +101,8 @@ class HourlyDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Container(
-          margin: const EdgeInsets.only(top: 10),
-          child: Text(getTime(timeStamp), style: TextStyle( color: cardIndex == index ? Colors.white : CustomColors.textColorBlack),),
-        ),
         Container(
           margin: const EdgeInsets.all(5),
           child: Image.asset(
@@ -112,9 +112,23 @@ class HourlyDetails extends StatelessWidget {
           ),
         ),
         Container(
-          margin: const EdgeInsets.only(bottom: 10),
-          child: Text("$temp°", style: TextStyle( color: cardIndex == index ? Colors.white : CustomColors.textColorBlack)),
-        )
+          margin: const EdgeInsets.only(bottom: 5),
+          child: Text("$temp°",
+              style: TextStyle(
+                  color: cardIndex == index
+                      ? Colors.white
+                      : CustomColors.textColorBlack)),
+        ),
+        Container(
+          margin: const EdgeInsets.only(top: 5),
+          child: Text(
+            getTime(timeStamp),
+            style: TextStyle(
+                color: cardIndex == index
+                    ? Colors.white
+                    : CustomColors.textColorBlack),
+          ),
+        ),
       ],
     );
   }

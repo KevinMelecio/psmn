@@ -71,15 +71,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     },
                   ),
                 ),
+                // ListTile(
+                //   iconColor: value
+                //       ? StyleApp.darkIconDrawer(context)
+                //       : StyleApp.lightIconDrawer(context),
+                //   leading: Image.asset('assets/strawberry.png'),
+                //   trailing: Icon(Icons.chevron_right),
+                //   title: Text('FruitApp'),
+                //   subtitle: Text('Carusel'),
+                //   onTap: () {},
+                // ),
                 ListTile(
                   iconColor: value
                       ? StyleApp.darkIconDrawer(context)
                       : StyleApp.lightIconDrawer(context),
-                  leading: Image.asset('assets/strawberry.png'),
+                  leading: Icon(Icons.task_alt_outlined),
                   trailing: Icon(Icons.chevron_right),
-                  title: Text('FruitApp'),
-                  subtitle: Text('Carusel'),
-                  onTap: () {},
+                  title: Text('Maps'),
+                  onTap: () => Navigator.pushNamed(context, '/maps'),
                 ),
                 ListTile(
                   iconColor: value

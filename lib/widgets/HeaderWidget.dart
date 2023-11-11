@@ -19,8 +19,9 @@ class _HeaderWidgetState extends State<HeaderWidget> {
 
   @override
   void initState() {
-    getAddress(globalController.getLattitude().value,
-        globalController.getLongitude().value);
+    getAddress(20.52353, -100.8157);
+    // getAddress(globalController.getLattitude().value,
+    //     globalController.getLongitude().value);
     super.initState();
   }
 
@@ -37,22 +38,22 @@ class _HeaderWidgetState extends State<HeaderWidget> {
     return Column(
       children: [
         Container(
-          margin: const EdgeInsets.only(left: 20, right: 20),
+          margin: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
           alignment: Alignment.topLeft,
           child: Text(
             city,
-            style: TextStyle(fontSize: 35, height: 2),
+            style: TextStyle(fontSize: 25, height: 2),
           ),
         ),
-        Container(
-          margin: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-          alignment: Alignment.topLeft,
-          child: Text(
-            date,
-            style:
-                TextStyle(fontSize: 14, color: Colors.grey[500], height: 1.5),
-          ),
-        )
+        // Container(
+        //   margin: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+        //   alignment: Alignment.topLeft,
+        //   child: Text(
+        //     date,
+        //     style:
+        //         TextStyle(fontSize: 14, color: Colors.grey[500], height: 1.5),
+        //   ),
+        // )
       ],
     );
   }

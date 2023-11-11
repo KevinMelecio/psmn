@@ -8,6 +8,7 @@ class GlobalController extends GetxController {
   final RxDouble _lattitude = 0.0.obs;
   final RxDouble _longitude = 0.0.obs;
   final RxInt _currentIndex = 0.obs;
+  
 
   RxBool checkLoading() => _isLoading;
   RxDouble getLattitude() => _lattitude;
@@ -52,8 +53,10 @@ class GlobalController extends GetxController {
     return await Geolocator.getCurrentPosition(
             desiredAccuracy: LocationAccuracy.high)
         .then((value) {
+          print("Latitude: ${value.latitude}, Longitude: ${value.longitude}");
       _lattitude.value = value.latitude;
       _longitude.value = value.longitude;
+      
 
       return FetchWeatherApi()
           .processData(value.latitude, value.longitude)

@@ -20,38 +20,58 @@ class _ClimaScreenState extends State<ClimaScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Clima')),
+        appBar: AppBar(
+          title: HeaderWidget(),
+        ),
         body: SafeArea(
-      child: Obx(() => globalController.checkLoading().isTrue
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
-          : Center(
-              child: ListView(scrollDirection: Axis.vertical, children: [
-                const SizedBox(
-                  height: 5,
-                ),
-                const HeaderWidget(),
-                //for our current temp
-                CurrentWeatherWidget(
-                  weatherDataCurrent:
-                      globalController.getData().getCurrentWeather(),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                HourlyWidget(
-                  weatherDataHourly:
-                      globalController.getData().getHourlyWeather(),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                DailyWidget(
-                  weatherDataDaily: globalController.getData().getDailyWeather(),
+          child: Obx(() => globalController.checkLoading().isTrue
+              ? const Center(
+                  child: CircularProgressIndicator(),
                 )
-              ]),
-            )),
-    ));
+              : Center(
+                  child: ListView(scrollDirection: Axis.vertical, children: [
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    // const HeaderWidget(),
+                    //for our current temp
+                    CurrentWeatherWidget(
+                      weatherDataCurrent:
+                          globalController.getData().getCurrentWeather(),
+                    ),
+                    
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10, top: 10),
+                      child: SizedBox(
+                        height: 2,
+                        child: Container(
+                          margin: EdgeInsets.only(left: 20, right: 20),
+                          height: 2,
+                          color: Colors.grey.shade200,
+                        ),
+                      ),
+                    ),
+                    HourlyWidget(
+                      weatherDataHourly:
+                          globalController.getData().getHourlyWeather(),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10, top: 10),
+                      child: SizedBox(
+                        height: 2,
+                        child: Container(
+                          margin: EdgeInsets.only(left: 20, right: 20),
+                          height: 2,
+                          color: Colors.grey.shade200,
+                        ),
+                      ),
+                    ),
+                    DailyWidget(
+                      weatherDataDaily:
+                          globalController.getData().getDailyWeather(),
+                    )
+                  ]),
+                )),
+        ));
   }
 }

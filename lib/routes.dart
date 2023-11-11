@@ -8,6 +8,7 @@ import 'package:pmsn20232/screens/clima_screen.dart';
 import 'package:pmsn20232/screens/dashboard_screen.dart';
 import 'package:pmsn20232/screens/detailmovie_screen.dart';
 import 'package:pmsn20232/screens/favoritemovie_screen.dart';
+import 'package:pmsn20232/screens/maps_screen.dart';
 import 'package:pmsn20232/screens/popular_screen.dart';
 import 'package:pmsn20232/screens/profesor_screen.dart';
 import 'package:pmsn20232/screens/register_screen.dart';
@@ -30,5 +31,6 @@ Map<String, WidgetBuilder> getRoutes() {
     '/detail': (BuildContext context) => DetailMovieScreen(),
     '/register': (BuildContext context) => RegisterScreen(),
     '/clima': (BuildContext context) => ClimaScreen(),
+    '/maps': (BuildContext context) => MapsScreen(),
   };
 }
