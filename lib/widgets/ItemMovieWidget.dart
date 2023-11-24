@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pmsn20232/models/favmovie_model.dart';
 import 'package:pmsn20232/models/popular_model.dart';
 import 'package:pmsn20232/screens/detailmovie_screen.dart';
 
@@ -13,3 +14,7 @@ Widget itemMovieWidget(PopularModel movie, BuildContext context) {
             NetworkImage('https://image.tmdb.org/t/p/w500${movie.posterPath}'),
       ));
 }
+
+
+
+

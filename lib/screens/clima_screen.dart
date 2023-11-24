@@ -30,16 +30,28 @@ class _ClimaScreenState extends State<ClimaScreen> {
                 )
               : Center(
                   child: ListView(scrollDirection: Axis.vertical, children: [
-                    const SizedBox(
-                      height: 5,
+                    Padding(
+                      padding: const EdgeInsets.only(left: 50, right: 50),
+                      child: ElevatedButton.icon(
+                          onPressed: () {},
+                          icon: Icon(Icons.map_outlined),
+                          label: Text('Ir a Mapa')),
                     ),
+                    // const SizedBox(
+                    //   height: 5,
+                    // ),
                     // const HeaderWidget(),
                     //for our current temp
-                    CurrentWeatherWidget(
-                      weatherDataCurrent:
-                          globalController.getData().getCurrentWeather(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        CurrentWeatherWidget(
+                          weatherDataCurrent:
+                              globalController.getData().getCurrentWeather(),
+                        ),
+                      ],
                     ),
-                    
+
                     Padding(
                       padding: const EdgeInsets.only(bottom: 10, top: 10),
                       child: SizedBox(
@@ -69,7 +81,7 @@ class _ClimaScreenState extends State<ClimaScreen> {
                     DailyWidget(
                       weatherDataDaily:
                           globalController.getData().getDailyWeather(),
-                    )
+                    ),
                   ]),
                 )),
         ));

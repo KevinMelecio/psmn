@@ -2,7 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:pmsn20232/controller/global_controller.dart';
+import 'package:pmsn20232/models/weather_current_model.dart';
+import 'package:pmsn20232/widgets/MapCurrentWeather.dart';
 
 class MapsScreen extends StatefulWidget {
   const MapsScreen({super.key});
@@ -16,22 +20,41 @@ class _MapsScreenState extends State<MapsScreen> {
   late LatLng selectedCity = LatLng(0.0, 0.0);
 
   Set<Marker> markers = {};
+  // List<Marker> _marker = [];
+  // List<Marker> _list = const [
+  //   Marker(markerId: MarkerId('1'),
+  //   position: LatLng(20.5214445316487007, -100.84057319909334),
+  //   infoWindow: InfoWindow(
+  //     title: 'My Position'
+  //   )),
+  //   Marker(markerId: MarkerId('2'),
+  //   position: LatLng(20.5908273, -100.4074538),
+  //   infoWindow: InfoWindow(
+  //     title: 'Santiago de Queretaro'
+  //   )),
+  //   Marker(markerId: MarkerId('3'),
+  //   position: LatLng(25.6489844, -100.4741527),
+  //   infoWindow: InfoWindow(
+  //     title: 'Santiago de Queretaro'
+  //   ))
+  // ];
 
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
 
   static const CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(20.52353, -100.8157),
-    zoom: 17,
+    target: LatLng(20.5214445316487007, -100.84057319909334),
+    zoom: 9,
   );
 
-  static const CameraPosition _kLake = CameraPosition(
-      bearing: 192.8334901395799,
-      target: LatLng(37.43296265331129, -122.08832357078792),
-      tilt: 59.440717697143555,
-      zoom: 19.151926040649414);
-
   MapType _currentMapType = MapType.normal;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // _marker.addAll(_list);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,13 +92,12 @@ class _MapsScreenState extends State<MapsScreen> {
       body: GoogleMap(
         onMapCreated: _onMapCreated,
         initialCameraPosition: _kGooglePlex,
-        // initialCameraPosition: CameraPosition(
-        //   target: LatLng(0.0, 0.0),
-        //   zoom: 2.0,
-        // ),
         onTap: _onMapTapped,
         markers: markers,
+        // markers: Set<Marker>.of(_marker),
+//para mostrar los marcadores guarados de la base de datos
         mapType: _currentMapType,
+        myLocationEnabled: true,
       ),
     );
   }
@@ -87,12 +109,22 @@ class _MapsScreenState extends State<MapsScreen> {
   }
 
   void _onMapTapped(LatLng location) async {
+    final GlobalController globalController =
+        Get.put(GlobalController(), permanent: true);
+
+    WeatherDataCurrent weatherDataCurrent =
+        globalController.getData().getCurrentWeather();
+
     String cityName = "";
     List<Placemark> placemarks =
         await placemarkFromCoordinates(location.latitude, location.longitude);
     if (placemarks.isNotEmpty) {
       cityName = placemarks[0].locality ?? 'Desconocido';
       print('Nombre de la ciudad : $cityName');
+
+      _showWeatherDialog(cityName, weatherDataCurrent, );
+      // MapCurrentWeather(weatherDataCurrent:
+      //                         globalController.getData().getCurrentWeather(),);
     }
     setState(() {
       selectedCity = location;
@@ -101,34 +133,59 @@ class _MapsScreenState extends State<MapsScreen> {
           markerId: MarkerId(selectedCity.toString()),
           position: selectedCity,
           infoWindow: InfoWindow(
-            title: cityName,
-            snippet:
-                'Lat: ${selectedCity.latitude}, Lng: ${selectedCity.longitude}',
-          ),
+              title: cityName,
+              snippet: 'Temperatura: ${weatherDataCurrent.current.temp}°C'
+              // 'Lat: ${selectedCity.latitude}, Lng: ${selectedCity.longitude}',
+              ),
         ),
       ]);
     });
   }
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     body: GoogleMap(
-  //       mapType: MapType.hybrid,
-  //       initialCameraPosition: _kGooglePlex,
-  //       onMapCreated: (GoogleMapController controller) {
-  //         _controller.complete(controller);
-  //       },
-  //     ),
-  //     floatingActionButton: FloatingActionButton.extended(
-  //       onPressed: _goToTheLake,
-  //       label: const Text('To the lake!'),
-  //       icon: const Icon(Icons.directions_boat),
-  //     ),
-  //   );
-  // }
 
-  Future<void> _goToTheLake() async {
-    final GoogleMapController controller = await _controller.future;
-    await controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
+  void _showWeatherDialog( 
+      String cityName, WeatherDataCurrent weatherDataCurrent) {
+        TextEditingController txtNameController = TextEditingController();
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Center(child: Text("Clima en $cityName")),
+            content: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    "assets/weather/${weatherDataCurrent.current.weather![0].icon}.png",
+                    height: 50,
+                    width: 50,
+                  ),
+                  Text('Temperatura: ${weatherDataCurrent.current.temp}°C'),
+                  Text('Humidity: ${weatherDataCurrent.current.humidity}%'),
+                  Text('Clouds: ${weatherDataCurrent.current.clouds}%'),
+                  Text('WindSpeed: ${weatherDataCurrent.current.windSpeed}km/s'),
+                  TextField(
+                    controller: txtNameController,
+                    decoration: InputDecoration(labelText: 'Agrega algun nombre'),
+                  )
+                ],
+              ),
+            ),
+            actions: [
+              ElevatedButton(onPressed: (){
+                String usertxt = txtNameController.text;
+                if(usertxt.isNotEmpty){
+                  print('Nombre de la ciudad $cityName');
+                  print('Nombre dado de $usertxt');
+                }
+              }, child: Text('Imprimir informacion adicional'))
+            ],
+            
+          );
+        });
+  }
+
+  Widget _infoWindowFunc(Marker marker) {
+    return Container();
   }
 }

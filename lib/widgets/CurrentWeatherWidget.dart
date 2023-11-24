@@ -11,24 +11,16 @@ class CurrentWeatherWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      // mainAxisAlignment: MainAxisAlignment.center,
       children: [
         temperatureAreaWidget(),
         SizedBox(
           width: 30,
         ),
+        // AreaHourlyWidget()
         currentWeatherMoreDetailsWidget(),
       ],
     );
-    // return Column(
-    //   children: [
-    //     // //temperature area
-    //     temperatureAreaWidget(),
-    //     const SizedBox(height: 20),
-    //     // //more details - winspeed, humidity, clouds
-    //     currentWeatherMoreDetailsWidget(),
-    //   ],
-    // );
   }
 
   Widget currentWeatherMoreDetailsWidget() {
@@ -48,7 +40,7 @@ class CurrentWeatherWidget extends StatelessWidget {
               child: Image.asset("assets/icons/windspeed.png"),
             ),
             SizedBox(
-              height: 5,
+              height: 7,
             ),
             Container(
               height: 60,
@@ -61,7 +53,7 @@ class CurrentWeatherWidget extends StatelessWidget {
               child: Image.asset("assets/icons/clouds.png"),
             ),
             SizedBox(
-              height: 5,
+              height: 7,
             ),
             Container(
               height: 60,

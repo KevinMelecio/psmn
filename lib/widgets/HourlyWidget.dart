@@ -40,37 +40,30 @@ class HourlyWidget extends StatelessWidget {
               ? 20
               : weatherDataHourly.hourly.length,
           itemBuilder: (context, index) {
-            return Obx((() => GestureDetector(
-                  onTap: () {
-                    cardIndex.value = index;
-                  },
-                  child: Container(
-                    width: 65,
-                    margin: const EdgeInsets.only(left: 20, right: 5),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(18),
-                        boxShadow: [
-                          BoxShadow(
-                              offset: const Offset(0.5, 0),
-                              blurRadius: 60,
-                              spreadRadius: 1,
-                              color: CustomColors.dividerLine.withAlpha(150)),
-                        ],
-                        gradient: cardIndex.value == index
-                            ? const LinearGradient(colors: [
-                                CustomColors.firstGradienteColor,
-                                CustomColors.secondGradientColor
-                              ])
-                            : null),
-                    child: HourlyDetails(
-                        index: index,
-                        cardIndex: cardIndex.toInt(),
-                        temp: weatherDataHourly.hourly[index].temp!,
-                        timeStamp: weatherDataHourly.hourly[index].dt!,
-                        weatherIcon:
-                            weatherDataHourly.hourly[index].weather![0].icon!),
-                  ),
-                )));
+            return GestureDetector(
+              onTap: () {
+                cardIndex.value = index;
+              },
+              child: Container(
+                width: 65,
+                margin: const EdgeInsets.only(left: 20, right: 5),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(18),
+                    boxShadow: [
+                      BoxShadow(
+                          offset: const Offset(0.5, 0),
+                          blurRadius: 60,
+                          spreadRadius: 1,
+                          color: CustomColors.dividerLine.withAlpha(150)),
+                    ],),
+                child: HourlyDetails(
+                    index: index,
+                    temp: weatherDataHourly.hourly[index].temp!,
+                    timeStamp: weatherDataHourly.hourly[index].dt!,
+                    weatherIcon:
+                        weatherDataHourly.hourly[index].weather![0].icon!),
+              ),
+            );
           }),
     );
   }
@@ -80,17 +73,16 @@ class HourlyWidget extends StatelessWidget {
 class HourlyDetails extends StatelessWidget {
   int temp;
   int index;
-  int cardIndex;
   int timeStamp;
   String weatherIcon;
 
-  HourlyDetails(
-      {super.key,
-      required this.temp,
-      required this.timeStamp,
-      required this.weatherIcon,
-      required this.index,
-      required this.cardIndex});
+  HourlyDetails({
+    super.key,
+    required this.temp,
+    required this.timeStamp,
+    required this.weatherIcon,
+    required this.index,
+  });
 
   String getTime(final timeStamp) {
     DateTime time = DateTime.fromMillisecondsSinceEpoch(timeStamp * 1000);
@@ -114,19 +106,13 @@ class HourlyDetails extends StatelessWidget {
         Container(
           margin: const EdgeInsets.only(bottom: 5),
           child: Text("$temp°",
-              style: TextStyle(
-                  color: cardIndex == index
-                      ? Colors.white
-                      : CustomColors.textColorBlack)),
+              style: TextStyle(color: CustomColors.textColorBlack)),
         ),
         Container(
           margin: const EdgeInsets.only(top: 5),
           child: Text(
             getTime(timeStamp),
-            style: TextStyle(
-                color: cardIndex == index
-                    ? Colors.white
-                    : CustomColors.textColorBlack),
+            style: TextStyle(color: CustomColors.textColorBlack),
           ),
         ),
       ],

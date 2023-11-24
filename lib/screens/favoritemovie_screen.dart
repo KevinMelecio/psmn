@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:pmsn20232/assets/global_values.dart';
 import 'package:pmsn20232/database/agendadb.dart';
+import 'package:pmsn20232/models/favmovie_model.dart';
 import 'package:pmsn20232/models/popular_model.dart';
 import 'package:pmsn20232/network/api_popular.dart';
 import 'package:pmsn20232/screens/detailmovie_screen.dart';
@@ -23,6 +26,7 @@ class _FavoriteMovieScreenState extends State<FavoriteMovieScreen> {
     super.initState();
     apiPopular = ApiPopular();
     MoviesIdsDB();
+    movieIds;
   }
 
   Future<void> MoviesIdsDB() async {
@@ -36,6 +40,7 @@ class _FavoriteMovieScreenState extends State<FavoriteMovieScreen> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,6 +52,7 @@ class _FavoriteMovieScreenState extends State<FavoriteMovieScreen> {
           builder: (context, value, _) {
             return FutureBuilder(
               future: apiPopular!.getMoviesFavorites(movieIds),
+              // future: apiPopular!.getMoviesFavorites(movieIds),
               builder: (BuildContext context,
                   AsyncSnapshot<List<PopularModel>?> snapshot) {
                 if (snapshot.hasData) {

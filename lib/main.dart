@@ -4,7 +4,9 @@ import 'package:pmsn20232/assets/global_values.dart';
 import 'package:pmsn20232/assets/styles_app.dart';
 import 'package:pmsn20232/routes.dart';
 import 'package:pmsn20232/screens/dashboard_screen.dart';
+import 'package:pmsn20232/screens/favoritemovie_screen.dart';
 import 'package:pmsn20232/screens/login_screen.dart';
+import 'package:pmsn20232/screens/popular_firebase_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
@@ -46,6 +48,7 @@ class _MyAppState extends State<MyApp> {
         builder: (context, value, _) {
           return MaterialApp(
               debugShowCheckedModeBanner: false,
+              // home: PupularFirebaseScree(),
               home: widget.rememberMe ? DashboardScreen() : LoginScreen(),
               routes: getRoutes(),
               theme: value
